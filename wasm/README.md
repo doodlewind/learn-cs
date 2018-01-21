@@ -1,12 +1,11 @@
-# Learning WASM
-
-## Install Emcripten
+## Compile WASM
 
 ```
-git clone https://github.com/juj/emsdk && cd emsdk 
-./emsdk install sdk-incoming-64bit binaryen-master-64bit 
-./emsdk activate sdk-incoming-64bit binaryen-master-64bit
-./emsdk_env.sh
+emcc extern.cpp -O1 -s EXPORTED_FUNCTIONS="['_square_val']" -s WASM=1 -s SIDE_MODULE=1 -o extern.wasm
 ```
 
-`source ./emsdk_env.sh` after installation.
+To run example:
+
+1. Compile WASM with command above.
+2. Run web server in this path.
+3. Open `/examples` to see basic demo.
