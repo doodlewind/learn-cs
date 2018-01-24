@@ -1,4 +1,4 @@
-#include "Stack.h"
+#include <Stack.h>
 #include <stdio.h>
 
 int main() {
