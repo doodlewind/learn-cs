@@ -3,3 +3,5 @@ a.out.js
 .vscode
 *.wasm
 *.o
+.cache
+dist
