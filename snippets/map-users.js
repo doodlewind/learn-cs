@@ -1,20 +1,16 @@
-const chars = 'ABCDEFGHJKLMNOPQRSTWXYZ'.split('')
-const boundarys = '驁簿錯鵽樲鰒餜靃攟鬠纙鞪黁漚曝裠鶸蜶籜鶩鑂韻糳'.split('')
+const keys = 'ABCDEFGHJKLMNOPQRSTWXYZ'.split('')
+const bounds = '驁簿錯鵽樲鰒餜靃攟鬠纙鞪黁漚曝裠鶸蜶籜鶩鑂韻糳'.split('')
 
-const getKey = word => boundarys
-  .filter(a => a.localeCompare(word[0], 'zh') <= 0)
-  .map(x => 1)
-  .reduce((a, b) => a + b, 0)
-
+const index = str => bounds.filter(a => a.localeCompare(str[0]) <= 0).length
 const mapAndSortUsers = arr => {
   const userDict = arr
-    .map(user => ({ [chars[getKey(user)]]: user }))
+    .map(user => ({ [keys[index(user)]]: user }))
     .reduce((a, b) => {
       const keyB = Object.keys(b)[0]
       return { ...a, [keyB]: a[keyB] ? `${a[keyB]}, ${b[keyB]}` : b[keyB] }
     })
   return Object.keys(userDict)
-    .map(key => ({ char: key, users: userDict[key] }))
+    .map(char => ({ char, users: userDict[char] }))
     .sort((a, b) => a.char <= b.char ? -1 : 1)
 }
 
