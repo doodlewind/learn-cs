@@ -1,5 +1,5 @@
 # learn-cs
-Resources learning basics.
+Resources with basic prototypes.
 
 ## Content
 TODO
