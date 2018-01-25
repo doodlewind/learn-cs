@@ -1,17 +1,20 @@
 const ffmpeg = require('ffmpeg.js')
 let stdout = ''
+let stderr = ''
 
-// Print FFmpeg's version.
+window.ffmpeg = ffmpeg
+
 ffmpeg({
-  arguments: ['-version'],
+  arguments: ['-formats'],
   print: (data) => {
     stdout += data + '\n'
   },
   printErr: (data) => {
-    console.error(data)
+    stderr += data + '\n'
   },
   onExit: (code) => {
     console.log('Process exited with code ' + code)
     console.log(stdout)
+    console.log(stderr)
   }
 })
