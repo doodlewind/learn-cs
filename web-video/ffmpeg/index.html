@@ -4,6 +4,13 @@
       <title>ffmpeg.js Example</title>
   </head>
   <body>
-    <script src="./bundle.js"></script>
+    <video id="video" autoplay loop></video>
+    <br/>
+    <button id="btn">start</button>
+    <a id="link" hidden download>download</a>
+    <script>const module = {};</script>
+    <script src="node_modules/ffmpeg.js/ffmpeg-webm.js"></script>
+    <script>const ffmpeg = module.exports;</script>
+    <script src="index.js"></script>
   </body>
 </html>
