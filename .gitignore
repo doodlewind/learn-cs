@@ -1,7 +1,6 @@
 a.out
 a.out.js
 .vscode
-*.wasm
 *.o
 .cache
 dist

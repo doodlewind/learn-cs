@@ -22,9 +22,9 @@ function fetchData (url) {
 }
 
 function encode (file) {
-  console.time('encode')
   fetchData(file).then(data => {
-    const res = ffmpeg({
+    console.time('encode')
+    const results = ffmpeg({
       MEMFS: [{ name: 'input.mp4', data }],
       stdin: () => {},
       arguments: [
@@ -32,15 +32,15 @@ function encode (file) {
         'out.webm'
       ]
     })
-    const videoBlob = new Blob([res.MEMFS[0].data])
+    const videoBlob = new Blob([results.MEMFS[0].data])
     const videoUrl = URL.createObjectURL(videoBlob)
     $video.src = videoUrl
     $link.href = videoUrl
+    $link.hidden = false
     console.timeEnd('encode')
   })
 }
 
 $btn.addEventListener('click', () => {
   encode('../resources/wa2.mp4')
-  $link.hidden = false
 }, false)
