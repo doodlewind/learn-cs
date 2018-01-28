@@ -1,5 +1,6 @@
 import { loadResource } from './loader'
+import { getBlockMeta } from './utils'
 
 loadResource('red-blue.gif').then(data => {
-  console.log(data)
+  getBlockMeta(data, 0)
 })
