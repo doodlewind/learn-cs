@@ -1,6 +1,4 @@
 import { loadResource } from './loader'
-import { getBlockMeta } from './utils'
+import { read } from './reader'
 
-loadResource('red-blue.gif').then(data => {
-  getBlockMeta(data, 0)
-})
+loadResource('red-blue.gif').then(read)
