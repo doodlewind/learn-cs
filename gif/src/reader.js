@@ -28,7 +28,8 @@ const rules = {
       size: 7,
       props: {
         width: readWord(gif, cur),
-        height: readWord(gif, cur + 2)
+        height: readWord(gif, cur + 2),
+        packed: gif[cur + 4].toString(16)
       }
     }),
     next: []
