@@ -31,7 +31,8 @@ const rules = {
         height: readWord(gif, cur + 2),
         globalColorTable: (gif[cur + 4] & 0b10000000) >> 7,
         sort: (gif[cur + 4] & 0b00001000) >> 3,
-        packed: gif[cur + 4].toString(16)
+        packed: gif[cur + 4].toString(16),
+        backgroundColorIndex: gif[cur + 5]
       }
     }),
     next: []
