@@ -1,8 +1,9 @@
 /* eslint-env browser */
 const $input = document.querySelector('input')
 const $link = document.getElementById('link')
-const $video = document.getElementById('video')
+// const $video = document.getElementById('video')
 
+// eslint-disable-next-line
 function arrayBufferToBase64 (buffer) {
   let binary = ''
   const bytes = new Uint8Array(buffer)
