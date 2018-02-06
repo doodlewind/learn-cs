@@ -1,14 +1,25 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { GREETING, square } from './utils/custom'
 
 export default class App extends React.Component {
+  state = {
+    num: 2
+  }
+
+  onSquare = () => {
+    square(this.state.num)
+      .then((num) => this.setState({ num: num || 2 }))
+      .catch(console.log)
+  }
+
   render () {
     return (
       <View style={styles.container}>
-        <Text>Hello React Native!</Text>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <Text>{this.state.num}</Text>
+        <Text onPress={this.onSquare}>
+          {GREETING}
+        </Text>
       </View>
     )
   }

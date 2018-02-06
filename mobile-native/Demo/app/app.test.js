@@ -1,6 +1,6 @@
 /* global it expect */
 import React from 'react'
-import App from './App'
+import App from './index'
 
 import renderer from 'react-test-renderer'
 
