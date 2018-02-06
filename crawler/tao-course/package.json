@@ -1,0 +1,14 @@
+{
+  "name": "tao",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "query-string": "^5.1.0",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0-rc.2"
+  }
+}
