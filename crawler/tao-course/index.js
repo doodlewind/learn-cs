@@ -1,37 +1,40 @@
 const {
+  fetchPagesCount,
+  fetchPage,
   fetchCourse,
-  fetchList,
+  initDirs,
   readFile,
+  writeResult,
   wait
 } = require('./utils')
-const {
-  parseCourse,
-  parseList
-} = require('./parser')
 
-async function courseLoop (hrefs) {
-  for (let i = 0; i < hrefs.length; i++) {
-    console.log(`query course ${hrefs[i]}: ${i + 1}/${hrefs.length}`)
-    await wait(4000)
-    const html = await fetchCourse(hrefs[i])
-    const result = parseCourse(html)
-    console.log(result)
+async function loopCourse (name, ids) {
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i]
+    console.log(`query course ${id}: ${i + 1}/${ids.length}`)
+    await wait(6000)
+    const result = await fetchCourse(id)
+    writeResult(name, id, result)
+    console.log(name, id, result)
   }
 }
 
-async function listLoop (list) {
-  for (let i = 0; i < list.length; i++) {
-    console.log(`query list ${list[i]}: ${i + 1}/${list.length}`)
-    await wait(2000)
-    const html = await fetchList(list[i])
-    const hrefs = parseList(html)
-    await courseLoop(hrefs)
+async function loopPages (names) {
+  for (let i = 0; i < names.length; i++) {
+    console.log(`query list ${names[i]}: ${i + 1}/${names.length}`)
+    const pageCount = await fetchPagesCount(names[i])
+    for (let j = 0; j < pageCount; j++) {
+      await wait(2000)
+      const courseIds = await fetchPage(names[i], j + 1)
+      await loopCourse(names[i], courseIds)
+    }
   }
 }
 
 function run () {
-  const inputs = JSON.parse(readFile('./inputs.json'))
-  listLoop(inputs)
+  const names = JSON.parse(readFile('./inputs.json'))
+  initDirs(names)
+  loopPages(names)
 }
 
 run()

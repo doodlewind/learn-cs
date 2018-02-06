@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const qs = require('query-string')
 
-function getInfo (script) {
+function parseInfo (script) {
   try {
     const code = `(function () { ${script}; return detailModel; })()`
     // eslint-disable-next-line
@@ -19,10 +19,19 @@ function getInfo (script) {
 function parseCourse (html) {
   const $ = cheerio.load(html)
   const script = $('script').last().html()
-  return getInfo(script)
+  return parseInfo(script)
 }
 
-function parseList (html) {
+function parsePagesCount (html) {
+  const $ = cheerio.load(html)
+  const count = $('.x-pager-info')
+    .map((i, el) => $(el).text())
+    .get()[0]
+    .replace(/^\D+/g, '')
+  return parseInt(count) || 0
+}
+
+function parsePage (html) {
   const $ = cheerio.load(html)
   const hrefs = $('#J_ResultList .result-desc-main h4 a')
     .map((i, el) => $(el).attr('href'))
@@ -32,6 +41,7 @@ function parseList (html) {
 }
 
 module.exports = {
+  parsePagesCount,
   parseCourse,
-  parseList
+  parsePage
 }
