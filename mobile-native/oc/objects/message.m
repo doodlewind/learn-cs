@@ -16,6 +16,12 @@ int main(int argc, const char *argv[]) {
     NSDate *dateOfBirth = [g dateFromComponents:comps];
     double seconds = [dateOfBirth timeIntervalSince1970];
     NSLog(@"%f seconds.", seconds);
+
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    NSUInteger day = [cal ordinalityOfUnit:NSCalendarUnitDay
+                                    inUnit:NSCalendarUnitMonth
+                                   forDate:dateOfBirth];
+    NSLog(@"This is day %lu of the month", day);
   }
   return 0;
 }
