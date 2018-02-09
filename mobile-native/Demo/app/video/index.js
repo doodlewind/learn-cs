@@ -2,11 +2,22 @@ import React, { Component, Fragment } from 'react'
 import { StyleSheet, View, Button } from 'react-native'
 import Video from 'react-native-video'
 
+const videos = [
+  require(`../resources/wa2/1.mp4`),
+  require(`../resources/wa2/2.mp4`),
+  require(`../resources/wa2/3.mp4`),
+  require(`../resources/wa2/4.mp4`),
+  require(`../resources/wa2/5.mp4`)
+]
+
+const next = (num) => !num ? 1 : (num + 1) % 5
+
 export default class VideoWrapper extends Component {
   video = null
+  index = 0
   state = {
     paused: false,
-    source: require('../resources/wa2.mp4')
+    source: videos[0]
   }
   onPlay = () => {
     this.setState({ paused: false })
@@ -15,8 +26,8 @@ export default class VideoWrapper extends Component {
     this.setState({ paused: true })
   }
   onChangeSrc = () => {
-    console.log('changing src')
-    this.setState({ source: require('../resources/key-demo.mp4') })
+    this.index = next(this.index)
+    this.setState({ source: videos[this.index] })
   }
 
   render () {
