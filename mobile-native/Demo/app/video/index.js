@@ -56,6 +56,7 @@ export default class VideoWrapper extends Component {
 
 const styles = StyleSheet.create({
   videoWrapper: {
+    backgroundColor: 'black',
     position: 'absolute',
     top: 0,
     left: 0,
