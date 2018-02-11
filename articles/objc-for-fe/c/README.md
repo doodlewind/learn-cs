@@ -6,7 +6,7 @@
 ## 目录
 
 * [重温 Hello World](./hello-world)
-* 变量与类型
+* [变量与类型](./variable-types)
 * 控制流
 * 函数调用与栈
 * 指针与引用
