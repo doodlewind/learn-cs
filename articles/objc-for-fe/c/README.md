@@ -7,7 +7,7 @@
 
 * [重温 Hello World](./hello-world)
 * [变量与类型](./variable-types)
-* 控制流
+* [控制流](./control-flow)
 * 函数调用与栈
 * 指针与引用
 * 结构体与堆
