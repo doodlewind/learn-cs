@@ -10,4 +10,4 @@
 * [控制流](./control-flow)
 * [函数调用与栈](./call-stack)
 * [指针与引用](./pointer-references)
-* 结构体与堆
+* [结构体与堆](./structure-heap)
