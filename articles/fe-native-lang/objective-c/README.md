@@ -7,11 +7,11 @@
 
 * Hello World
 * 对象与消息
-* class 与继承
+* 类与继承
 * 对象生命周期
 * 集合类
 * 常量
 * 回调
-* Protocol
-* Category
-* Block
+* 协议与代理
+* 类别
+* 块
