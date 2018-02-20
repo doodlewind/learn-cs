@@ -1,11 +1,9 @@
-// gcc -framework Foundation filename.m
-
 #import <Foundation/Foundation.h>
 
 int main(int argc, const char *argv[]) {
   @autoreleasepool {
     NSDate *now = [NSDate date];
-    NSLog(@"New date is at %p", now);
+    NSLog(@"The date is %@", now);
   }
   return 0;
 }
