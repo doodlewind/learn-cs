@@ -5,16 +5,14 @@ import { render } from './render'
 import { initBuffers } from './buffers'
 import { initProgram } from './shaders'
 
-function main () {
-  const canvas = document.querySelector('#glcanvas')
-  const gl = canvas.getContext('webgl')
+// Init WebGL context.
+const gl = document.querySelector('#glcanvas').getContext('webgl')
 
-  // Here's where we call the routine that builds all the
-  // objects we'll be drawing.
-  const buffers = initBuffers(gl)
-  const programInfo = initProgram(gl)
-  // Render the scene.
-  render(gl, programInfo, buffers)
-}
+// Init shader program.
+const programInfo = initProgram(gl)
 
-main()
+// Init postion buffer.
+const buffers = initBuffers(gl)
+
+// Render a frame.
+render(gl, programInfo, buffers)
