@@ -6,7 +6,10 @@ function parseInfo (script) {
     const code = `(function () { ${script}; return detailModel; })()`
     // eslint-disable-next-line
     const json = eval(code)
-    const keys = ['title', 'shopName', 'sellerNick', 'brightSpot', 'learnCount']
+    const keys = [
+      'title', 'shopName', 'sellerNick', 'brightSpot', 'learnCount',
+      'price', 'orginalPrice', 'sectionCount', 'shopUrl'
+    ]
     const result = {}
     keys.forEach(key => { result[key] = json[key] })
     return result
