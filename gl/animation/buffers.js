@@ -1,7 +1,6 @@
-// Initialize the buffers we'll need. For this demo, we just
-// have one object -- a simple two-dimensional square.
+// Initialize the buffers we'll need.
 export function initBuffers (gl) {
-  // Create an array of positions for the square.
+  // Create an array of positions for the cubic.
   const positions = [
     1.0, 1.0,
     -1.0, 1.0,
