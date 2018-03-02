@@ -1,7 +1,7 @@
 export let isVideoReady = false
 
 export function initVideo (url) {
-  const video = document.createElement('video')
+  const video = window.video = document.createElement('video')
 
   let playing = false
   let timeupdate = false
@@ -22,7 +22,10 @@ export function initVideo (url) {
   }, true)
 
   video.src = url
-  video.play()
+  // Pause for debug.
+  setTimeout(() => {
+    video.pause()
+  }, 2e3)
 
   function checkReady () {
     if (playing && timeupdate) {

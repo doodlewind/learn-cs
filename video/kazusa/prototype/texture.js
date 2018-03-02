@@ -1,6 +1,5 @@
 export function updateTexture (gl, texture, video) {
   if (!video) return
-
   const level = 0
   const internalFormat = gl.RGBA
   const srcFormat = gl.RGBA
