@@ -22,10 +22,6 @@ export function initVideo (url) {
   }, true)
 
   video.src = url
-  // Pause for debug.
-  setTimeout(() => {
-    video.pause()
-  }, 2e3)
 
   function checkReady () {
     if (playing && timeupdate) {

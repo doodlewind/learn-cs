@@ -5,10 +5,12 @@ import { updateTexture } from './texture'
 // Wrap render function.
 export function render (gl, programInfo, buffers, texture, video) {
   requestAnimationFrame(() => {
-    if (isVideoReady) {
-      updateTexture(gl, texture, video)
+    if (!video.paused) {
+      if (isVideoReady) {
+        updateTexture(gl, texture, video)
+      }
+      renderFrame(gl, programInfo, buffers, texture)
     }
-    renderFrame(gl, programInfo, buffers, texture)
 
     // Recursive render.
     render(gl, programInfo, buffers, texture, video)
@@ -20,7 +22,6 @@ function renderFrame (gl, programInfo, buffers, texture) {
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
   gl.depthFunc(gl.LEQUAL)
-
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   {
