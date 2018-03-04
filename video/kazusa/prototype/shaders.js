@@ -14,12 +14,14 @@ const fsSource = `
   precision mediump float;
 
   varying vec2 vertPos;
-  uniform sampler2D uSampler;
+  uniform sampler2D uSampler0;
+  uniform sampler2D uSampler1;
 
   void main() {
     vec2 texCoord = vec2(vertPos.s, -vertPos.t) * 0.5 + 0.5;
-    vec3 texColor = texture2D(uSampler, texCoord.st).rgb;
-    gl_FragColor = vec4(texColor.rgb, 1.0);
+    vec4 texColor0 = texture2D(uSampler0, texCoord.st);
+    vec4 texColor1 = texture2D(uSampler1, texCoord.st);
+    gl_FragColor = texColor0 * texColor1;
   }
 `
 
@@ -42,35 +44,32 @@ function initShaderProgram (gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
 
-  const shaderProgram = gl.createProgram()
-  gl.attachShader(shaderProgram, vertexShader)
-  gl.attachShader(shaderProgram, fragmentShader)
-  gl.linkProgram(shaderProgram)
+  const program = gl.createProgram()
+  gl.attachShader(program, vertexShader)
+  gl.attachShader(program, fragmentShader)
+  gl.linkProgram(program)
 
-  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     console.log(
-      'Error init shader program', gl.getProgramInfoLog(shaderProgram)
+      'Error init shader program', gl.getProgramInfoLog(program)
     )
     return null
   }
 
-  return shaderProgram
+  return program
 }
 
 export function initProgram (gl) {
-  const shaderProgram = initShaderProgram(gl, vsSource, fsSource)
+  const program = initShaderProgram(gl, vsSource, fsSource)
 
   const programInfo = {
-    program: shaderProgram,
+    program,
     attributes: {
-      inPos: gl.getAttribLocation(
-        shaderProgram, 'inPos'
-      )
+      inPos: gl.getAttribLocation(program, 'inPos')
     },
     uniforms: {
-      uSampler: gl.getUniformLocation(
-        shaderProgram, 'uSampler'
-      )
+      uSampler0: gl.getUniformLocation(program, 'uSampler0'),
+      uSampler1: gl.getUniformLocation(program, 'uSampler1')
     }
   }
   return programInfo

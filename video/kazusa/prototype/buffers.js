@@ -23,7 +23,6 @@ export function initBuffers (gl) {
   )
 
   return {
-    position: positionBuffer,
-    textureCoord: textureCoordBuffer
+    position: positionBuffer
   }
 }

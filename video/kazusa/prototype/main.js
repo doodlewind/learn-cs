@@ -1,9 +1,9 @@
 // Usage: `parcel index.html`
 
-import { render } from './render'
+import { loop } from './render'
 import { initBuffers } from './buffers'
 import { initProgram } from './shaders'
-import { initTexture } from './texture'
+import { initTextures } from './texture'
 import { initVideo } from './video'
 
 const gl = document.querySelector('#glcanvas').getContext('webgl')
@@ -12,8 +12,11 @@ const programInfo = initProgram(gl)
 
 const buffers = initBuffers(gl)
 
-const video = initVideo(require('./kazusa.mp4'))
+const videos = [
+  initVideo(require('./kazusa.mp4')),
+  initVideo(require('./sea.mp4'))
+]
 
-const texture = initTexture(gl)
+const textures = initTextures(gl)
 
-render(gl, programInfo, buffers, texture, video)
+loop(gl, programInfo, buffers, textures, videos)
