@@ -4,3 +4,4 @@ a.out.js
 *.o
 .cache
 dist
+node_modules
