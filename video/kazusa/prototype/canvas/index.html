@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas Video Demo</title>
+  </head>
+  <style>
+    #video-a, #video-b {
+      width: 200px;
+    }
+  </style>
+  <body>
+    <video id="video-a" src="../sea.mp4" autoplay loop hidden>
+    </video>
+    <video id="video-b" src="../kazusa.mp4" autoplay loop hidden>
+    </video>
+    <br/>
+    <canvas id="tmp-a" width="480" height="270" hidden></canvas>
+    <canvas id="tmp-b" width="480" height="270" hidden></canvas>
+    <canvas id="result" width="480" height="270"></canvas>
+    <script src="./main.js"></script>
+  </body>
+</html>
