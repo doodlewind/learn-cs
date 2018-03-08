@@ -8,11 +8,6 @@ export function getVideoDuration (url) {
   })
 }
 
-export async function getVideosDuration (fileURLs) {
-  const durations = await Promise.all(fileURLs.map(getVideoDuration))
-  return durations.reduce((a, b) => a + b)
-}
-
 export function getMockProject (videos) {
   const durations = videos.map(video => video.duration)
   return {
