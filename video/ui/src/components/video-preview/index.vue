@@ -5,7 +5,7 @@
     <br/>
     <div class="video-body">
       <video
-        :src="videoURL"
+        :src="currURL"
         ref="video"
         autoplay
       >
@@ -16,8 +16,8 @@
       <div
         class="timeline-bar"
         :style="{
-          left: '50px',
-          transitionDuration: '2s'
+          left: currOffset + '%',
+          transitionDuration: currDuration + 's'
         }"
       />
     </div>
@@ -29,42 +29,59 @@
 
 <script>
 import Vue from 'vue'
-import { Stream } from './timeline'
-
-Stream()
+import { Stream, demoProject } from './timeline'
+import { getVideoDuration, getMockProject } from './utils'
 
 export default {
   name: 'VideoPreview',
   data () {
     return {
-      videoURL: null,
-      fileURLs: [null, null]
+      currURL: '',
+      currOffset: 0,
+      currDuration: 0,
+      // video: { name, url, duration }
+      videos: []
     }
   },
   methods: {
-    play () {
-      if (!this.fileURLs[0] || !this.fileURLs[1]) {
-        window.alert('invalid videos')
-        return
-      }
+    async play () {
+      const DEBUG_USE_MOCK = false
+      let project
 
-      this.videoURL = this.fileURLs[0]
-      setTimeout(() => {
-        this.videoURL = this.fileURLs[1]
-      }, 3e3)
+      DEBUG_USE_MOCK
+        ? project = demoProject
+        : project = getMockProject(this.videos)
+
+      const { duration, timeline } = project
+      const timelineStream = Stream(timeline)
+
+      // debugger // eslint-disable-line
+      timelineStream.subscribe(clip => {
+        console.log(clip)
+        const { position, start, end, url } = clip
+        const offset = position + end - start
+        this.currOffset = offset / duration * 100
+        this.currDuration = end - start
+        this.currURL = url
+      })
     },
     pause () {
       this.$refs.video.pause()
     },
     change () {},
-    setFileURL (e, index) {
+    async setFileURL (e, index) {
       const file = e.target.files[0]
-
       const canPlay = this.$refs.video.canPlayType(file.type)
       if (!canPlay) return
 
-      const fileURL = window.URL.createObjectURL(file)
-      Vue.set(this.fileURLs, index, fileURL)
+      const url = window.URL.createObjectURL(file)
+      const videoMeta = {
+        url,
+        name: file.name,
+        duration: await getVideoDuration(url)
+      }
+
+      Vue.set(this.videos, index, videoMeta)
     }
   }
 }
@@ -86,6 +103,7 @@ export default {
   background: grey;
   cursor: pointer;
   transition-property: 'left';
+  transition-timing-function: linear;
 }
 .video-preview {
   color: #666;

@@ -1,24 +1,20 @@
 /* eslint-disable no-debugger */
 import { Observable } from 'rxjs'
 
-const project = {
-  duration: 10,
+export const demoProject = {
+  duration: 4.505 + 41.876,
   timeline: [
-    { name: 'A', position: 0, start: 0, end: 1 },
-    { name: 'B', position: 2, start: 0, end: 1 },
-    { name: 'C', position: 4, start: 0, end: 1 },
-    { name: 'D', position: 8, start: 0, end: 1 }
+    { name: 'A', url: '', position: 0, start: 0, end: 4.505 },
+    { name: 'B', url: '', position: 4.505, start: 0, end: 41.876 }
   ]
 }
 
-export function Stream () {
-  const { timeline } = project
-  Observable
+export function Stream (timeline) {
+  return Observable
     .from(timeline)
     .flatMap(clip => {
       return Observable
         .timer(clip.position * 1e3)
         .map(() => clip)
     })
-    .subscribe(x => console.log(x))
 }
