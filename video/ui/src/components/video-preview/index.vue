@@ -5,7 +5,7 @@
     <br/>
     <div class="video-body">
       <video
-        :src="currURL"
+        :src="currentURL"
         ref="video"
         autoplay
       >
@@ -15,33 +15,45 @@
     <div class="timeline-wrapper">
       <div
         class="timeline-bar"
+        ref="bar"
         :style="{
-          left: currOffset + '%',
-          transitionDuration: currDuration + 's'
+          left: currentOffset + '%',
+          transitionDuration: currentDuration + 's'
         }"
       />
     </div>
     <button @click="play">play</button>
     <button @click="pause">pause</button>
-    <button @click="change">change</button>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { Stream, demoProject } from './timeline'
-import { getVideoDuration, getMockProject } from './utils'
+import {
+  initStream,
+  getVideoDuration,
+  getMockProject,
+  demoProject
+} from './timeline'
+import { getCurrentOffset } from './utils'
 
 export default {
   name: 'VideoPreview',
   data () {
     return {
-      currURL: '',
-      currOffset: 0,
-      currDuration: 0,
+      currentURL: '',
+      currentOffset: 0,
+      currentDuration: 0,
       // video: { name, url, duration }
       videos: []
     }
+  },
+  created () {
+    this.timelineStream = null
+  },
+  mounted () {
+    // for debug
+    window.v = this.$refs.video
   },
   methods: {
     async play () {
@@ -52,23 +64,34 @@ export default {
         ? project = demoProject
         : project = getMockProject(this.videos)
 
-      const { duration, timeline } = project
-      const timelineStream = Stream(timeline)
+      const { duration } = project
+      this.timelineStream = initStream(project, this.currentOffset)
 
-      // debugger // eslint-disable-line
-      timelineStream.subscribe(clip => {
-        console.log(clip)
+      this.timelineStream.subscribe(clip => {
         const { position, start, end, url } = clip
         const offset = position + end - start
-        this.currOffset = offset / duration * 100
-        this.currDuration = end - start
-        this.currURL = url
+        this.currentOffset = offset / duration * 100
+        this.currentDuration = end - start
+
+        const videoRef = this.$refs.video
+        // 分别处理初始加载、切换新视频与继续播放当前视频的情形
+        if (!this.currentURL || this.currentURL !== url) {
+          this.currentURL = url
+        } else if (videoRef.paused) {
+          videoRef.play()
+        }
       })
+      // debugger // eslint-disable-lin
+      this.timelineStream.next(true)
     },
+    // 做三件小事，暂停 video、暂停 bar 与暂停 stream
     pause () {
-      this.$refs.video.pause()
+      const { video, bar } = this.$refs
+      video.pause()
+      this.currentDuration = 0
+      this.currentOffset = getCurrentOffset(bar)
+      this.timelineStream.next(false)
     },
-    change () {},
     async setFileURL (e, index) {
       const file = e.target.files[0]
       const canPlay = this.$refs.video.canPlayType(file.type)
