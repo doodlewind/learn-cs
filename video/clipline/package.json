@@ -1,0 +1,46 @@
+{
+  "name": "clipline",
+  "version": "0.1.0",
+  "description": "TODO",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "yarn run build:es & yarn run build:cjs & yarn run build:umd & yarn run build:umd-min",
+    "build:es": "rollup --config ./build/rollup.js",
+    "build:cjs": "rollup --config ./build/rollup-cjs.js",
+    "build:umd": "rollup --config ./build/rollup-umd.js --silent",
+    "build:umd-min": "rollup --config ./build/rollup-umd-min.js --silent",
+    "clean": "rm -rf ./lib ./node_modules",
+    "lint": "standard",
+    "release": "np",
+    "test": "yarn run build:cjs && ava",
+    "watch": "rollup --config ./build/rollup-cjs.js --watch"
+  },
+  "keywords": [],
+  "author": "doodlewind",
+  "license": "MIT",
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ]
+  },
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "8.0.2",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "np": "^2.18.3",
+    "rollup": "^0.53.2",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1",
+    "standard": "^10.0.3",
+    "uglify-es": "^3.3.4"
+  }
+}
