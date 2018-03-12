@@ -30,12 +30,11 @@
 <script>
 import Vue from 'vue'
 import {
-  initStream,
   getVideoDuration,
   getMockProject,
   demoProject
-} from './timeline'
-import { getCurrentOffset } from './utils'
+} from './utils'
+import { Clipline } from './clipline'
 
 export default {
   name: 'VideoPreview',
@@ -45,52 +44,29 @@ export default {
       currentOffset: 0,
       currentDuration: 0,
       // video: { name, url, duration }
-      videos: []
+      project: {
+        duration: 0,
+        clips: []
+      }
     }
   },
   created () {
     this.timelineStream = null
   },
   mounted () {
-    // for debug
-    window.v = this.$refs.video
+    const DEBUG_USE_MOCK = true
+
+    DEBUG_USE_MOCK
+      ? this.project = demoProject
+      : this.project = getMockProject(this.videos)
   },
   methods: {
     async play () {
-      const DEBUG_USE_MOCK = false
-      let project
-
-      DEBUG_USE_MOCK
-        ? project = demoProject
-        : project = getMockProject(this.videos)
-
-      const { duration } = project
-      this.timelineStream = initStream(project, this.currentOffset)
-
-      this.timelineStream.subscribe(clip => {
-        const { position, start, end, url } = clip
-        const offset = position + end - start
-        this.currentOffset = offset / duration * 100
-        this.currentDuration = end - start
-
-        const videoRef = this.$refs.video
-        // 分别处理初始加载、切换新视频与继续播放当前视频的情形
-        if (!this.currentURL || this.currentURL !== url) {
-          this.currentURL = url
-        } else if (videoRef.paused) {
-          videoRef.play()
-        }
-      })
-      // debugger // eslint-disable-lin
-      this.timelineStream.next(true)
+      const clipline = new Clipline(this.project.clips)
+      const timers = clipline.getTimers(0, true)
+      console.log(timers)
     },
-    // 做三件小事，暂停 video、暂停 bar 与暂停 stream
     pause () {
-      const { video, bar } = this.$refs
-      video.pause()
-      this.currentDuration = 0
-      this.currentOffset = getCurrentOffset(bar)
-      this.timelineStream.next(false)
     },
     async setFileURL (e, index) {
       const file = e.target.files[0]

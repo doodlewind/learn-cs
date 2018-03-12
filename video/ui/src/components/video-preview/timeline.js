@@ -18,7 +18,7 @@ export function getMockProject (videos) {
   const durations = videos.map(video => video.duration)
   return {
     duration: durations.reduce((a, b) => a + b, 0),
-    timeline: videos.map((video, i) => ({
+    clips: videos.map((video, i) => ({
       name: video.name,
       // 顺序排列下每个视频默认 position 为前项 duration 之和
       position: durations.slice(0, i).reduce((a, b) => a + b, 0),
@@ -31,7 +31,7 @@ export function getMockProject (videos) {
 
 export const demoProject = {
   duration: 4.505 + 41.876,
-  timeline: [
+  clips: [
     { name: 'A', url: '', position: 0, start: 0, end: 4.505 },
     { name: 'B', url: '', position: 4.505, start: 0, end: 41.876 }
   ]
@@ -43,11 +43,11 @@ function afterCurrentOffset (clip, duration, currentOffset) {
 }
 
 export function initStream (project, currentOffset) {
-  const { duration, timeline } = project
+  const { duration, clips } = project
   debug('current state', duration, currentOffset)
 
   const playStream = Observable
-    .from(timeline)
+    .from(clips)
     .filter(clip => {
       return afterCurrentOffset(clip, duration, currentOffset)
     })
