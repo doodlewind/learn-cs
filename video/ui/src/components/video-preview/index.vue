@@ -41,6 +41,9 @@ import {
   PLAY_CLIP,
   STOP_CLIP
 } from './clipline'
+import Debug from 'debug'
+
+const debug = Debug('video')
 
 export default {
   name: 'VideoPreview',
@@ -64,7 +67,7 @@ export default {
     this.subscriber = null
   },
   mounted () {
-    const DEBUG_USE_MOCK = true
+    const DEBUG_USE_MOCK = false
     if (DEBUG_USE_MOCK) {
       this.clips = demoProject.clips
       this.duration = demoProject.duration
@@ -85,6 +88,17 @@ export default {
       const timers = clipline.getTimers(currentTime, paused)
       this.subscribeStream(timers)
     },
+    playVideo (url) {
+      // 分别处理初始加载、切换新视频与继续播放当前视频的情形
+      if (!this.currentURL || this.currentURL !== url) {
+        this.currentURL = url
+      } else if (this.$refs.video.paused) {
+        this.$refs.video.play()
+      }
+    },
+    stopVideo () {
+      this.$refs.video.pause()
+    },
     async updateFile (e, index) {
       const file = e.target.files[0]
       const canPlay = this.$refs.video.canPlayType(file.type)
@@ -104,19 +118,21 @@ export default {
     },
     subscribeStream (timers) {
       if (this.subscriber) this.subscriber.unsubscribe()
-      console.log(timers)
+      debug('timers', timers)
       const timelineStream = initStream(timers)
       this.subscriber = timelineStream.subscribe(event => {
-        console.log(event)
+        debug('event', event)
         switch (event.type) {
           case PLAY_CLIP: {
-            const { position, start, end } = event.clip
+            const { position, start, end, url } = event.clip
+            this.playVideo(url)
             this.nextPosition = (position + end - start) / this.duration * 100
             this.nextDuration = event.duration
             break
           }
           case STOP_CLIP: {
             this.nextDuration = 0
+            this.stopVideo()
             const currentTime = getCurrentTime(this.$refs.bar, this.duration)
             this.nextPosition = currentTime / this.duration * 100
             break

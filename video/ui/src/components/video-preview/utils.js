@@ -1,8 +1,5 @@
 /* eslint-disable no-debugger */
-import { Observable, Subject } from 'rxjs'
-import Debug from 'debug'
-
-const debug = Debug('video')
+import { Observable } from 'rxjs'
 
 export function getVideoDuration (url) {
   return new Promise((resolve, reject) => {
@@ -44,8 +41,6 @@ export function getCurrentTime (bar, duration) {
 }
 
 export function initStream (timers) {
-  debug('timers', timers)
-
   return Observable
     .from(timers)
     .flatMap(timer => (
