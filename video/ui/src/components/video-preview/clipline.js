@@ -1,5 +1,5 @@
-const PLAY_CLIP = 'PLAY_CLIP'
-const STOP_CLIP = 'STOP_CLIP'
+export const PLAY_CLIP = 'PLAY_CLIP'
+export const STOP_CLIP = 'STOP_CLIP'
 
 export class Clipline {
   constructor (clips) {
@@ -19,12 +19,16 @@ export class Clipline {
     const currentTimers = currentClips.map(clip => ({
       type: paused ? STOP_CLIP : PLAY_CLIP,
       interval: 0,
+      duration: paused
+        ? 0
+        : clip.end - clip.start - (currentTime - clip.position),
       clip
     }))
 
     const futureTimers = futureClips.map(clip => ({
       type: PLAY_CLIP,
       interval: clip.position - currentTime,
+      duration: clip.end - clip.start,
       clip
     }))
 

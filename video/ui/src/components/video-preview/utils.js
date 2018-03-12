@@ -14,7 +14,7 @@ export function getVideoDuration (url) {
   })
 }
 
-export function getMockProject (videos) {
+export function getProjectMeta (videos) {
   const durations = videos.map(video => video.duration)
   return {
     duration: durations.reduce((a, b) => a + b, 0),
@@ -30,44 +30,25 @@ export function getMockProject (videos) {
 }
 
 export const demoProject = {
-  duration: 4.505 + 41.876,
+  duration: 10,
   clips: [
-    { name: 'A', url: '', position: 0, start: 0, end: 4.505 },
-    { name: 'B', url: '', position: 4.505, start: 0, end: 41.876 }
+    { name: 'A', url: '', position: 0, start: 0, end: 5 },
+    { name: 'B', url: '', position: 5, start: 0, end: 5 }
   ]
 }
 
-function afterCurrentOffset (clip, duration, currentOffset) {
-  const { position, start, end } = clip
-  return position + end - start >= currentOffset
-}
-
-export function getCurrentOffset (bar) {
+export function getCurrentTime (bar, duration) {
   const leftPx = window.getComputedStyle(bar).getPropertyValue('left')
-  return parseFloat(leftPx) / 300 * 100
+  const currentPercentage = parseFloat(leftPx) / 300
+  return duration * currentPercentage
 }
 
-// FIXME
-export function initStream (project, currentOffset) {
-  const { duration, clips } = project
-  debug('current state', duration, currentOffset)
+export function initStream (timers) {
+  debug('timers', timers)
 
-  const playStream = Observable
-    .from(clips)
-    .filter(clip => {
-      return afterCurrentOffset(clip, duration, currentOffset)
-    })
-    // map clip to timer
-    .map(clip => ({
-      ...clip,
-      fireAt: clip.position
-    }))
-    .do(timer => debug('timer', timer))
-    .flatMap(timer => {
-      return Observable
-        .timer(timer.fireAt * 1e3)
-        .map(() => timer)
-    })
-  return new Subject()
-    .switchMap(play => play ? playStream : Observable.never())
+  return Observable
+    .from(timers)
+    .flatMap(timer => (
+      Observable.timer(timer.interval * 1e3)).map(() => timer)
+    )
 }
