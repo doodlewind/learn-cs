@@ -15,6 +15,7 @@
     <div class="timeline-wrapper">
       <div
         class="timeline-bar"
+        @mousedown.prevent="onBarMouseDown"
         ref="bar"
         :style="{
           left: nextPosition + '%',
@@ -50,6 +51,7 @@ export default {
   data () {
     return {
       currentURL: '',
+      barPressed: false,
       nextPosition: 0,
       nextDuration: 0,
       duration: 0,
@@ -139,6 +141,27 @@ export default {
           }
         }
       })
+    },
+    onBarMouseDown (e) {
+      this.barPressed = true
+      const baseX = e.clientX
+      let offset = 0
+      const onMouseMove = (e) => {
+        offset = e.clientX - baseX
+      }
+      const onMouseUp = (e) => {
+        this.barPressed = false
+        console.log(offset)
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('mouseup', onMouseUp)
+      }
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', onMouseUp)
+    }
+  },
+  watch: {
+    barPressed (oldVal, newVal) {
+      if (!newVal) this.pause()
     }
   }
 }
