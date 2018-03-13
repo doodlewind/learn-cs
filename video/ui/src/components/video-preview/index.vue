@@ -11,7 +11,6 @@
       >
       </video>
     </div>
-    <br/>
     <div class="timeline-wrapper">
       <div
         class="timeline-bar"
@@ -37,10 +36,11 @@ import {
   demoProject
 } from './utils'
 import {
-  Clipline,
+  ClipModel,
   PLAY_CLIP,
-  STOP_CLIP
-} from './clipline'
+  STOP_CLIP,
+  SEEK_CLIP
+} from './clip-model'
 import Debug from 'debug'
 import { SlideBar } from './slide-bar'
 
@@ -55,22 +55,17 @@ export default {
       nextDuration: 0,
       duration: 0,
       // video: { name, url, duration }
-      videos: [],
-      clips: []
-    }
-  },
-  computed: {
-    nextPercentage () {
-      return this.nextTime / this.duration * 100
+      videos: []
     }
   },
   created () {
+    this.clipModel = new ClipModel()
     this.subscriber = null
   },
   mounted () {
     const DEBUG_USE_MOCK = false
     if (DEBUG_USE_MOCK) {
-      this.clips = demoProject.clips
+      this.clipModel.setClips(demoProject.clips)
       this.duration = demoProject.duration
     }
     // eslint-disable-next-line
@@ -83,19 +78,19 @@ export default {
   },
   methods: {
     play () {
-      this.setVideoState(false)
+      const currentTime = getCurrentTime(this.$refs.bar, this.duration)
+      const timers = this.clipModel.getPlayTimers(currentTime)
+      this.subscribeStream(timers)
     },
     pause () {
-      this.setVideoState(true)
-    },
-    setVideoState (paused) {
-      const clipline = new Clipline(this.clips)
       const currentTime = getCurrentTime(this.$refs.bar, this.duration)
-      const timers = clipline.getTimers(currentTime, paused)
+      const timers = this.clipModel.getPausedTimers(currentTime)
       this.subscribeStream(timers)
     },
     seek (percentage) {
-      console.log('seeking', percentage)
+      const time = this.duration * percentage
+      const timers = this.clipModel.getSeekTimers(time)
+      this.subscribeStream(timers)
     },
     playVideo (url) {
       // 分别处理初始加载、切换新视频与继续播放当前视频的情形
@@ -105,8 +100,15 @@ export default {
         this.$refs.video.play()
       }
     },
-    stopVideo () {
+    pauseVideo () {
       this.$refs.video.pause()
+    },
+    seekVideo (url, time) {
+      this.pauseVideo()
+      if (!this.currentURL || this.currentURL !== url) {
+        this.currentURL = url
+      }
+      this.$refs.video.currentTime = time
     },
     async updateFile (e, index) {
       const file = e.target.files[0]
@@ -122,7 +124,7 @@ export default {
 
       Vue.set(this.videos, index, videoMeta)
       const { duration, clips } = getProjectMeta(this.videos)
-      this.clips = clips
+      this.clipModel.setClips(clips)
       this.duration = duration
     },
     subscribeStream (timers) {
@@ -141,9 +143,16 @@ export default {
           }
           case STOP_CLIP: {
             this.nextDuration = 0
-            this.stopVideo()
+            this.pauseVideo()
             const currentTime = getCurrentTime(this.$refs.bar, this.duration)
             this.nextPosition = currentTime / this.duration * 100
+            break
+          }
+          case SEEK_CLIP: {
+            const { time, from } = event
+            this.seekVideo(event.clip.url, from)
+            this.nextDuration = 0
+            this.nextPosition = time / this.duration * 100
             break
           }
         }
@@ -157,8 +166,9 @@ export default {
 .timeline-wrapper {
   position: relative;
   width: calc(3 * 100px);
+  border-right: 10px #ddd solid;
   height: 20px;
-  background: green;
+  background: #ddd;
 }
 .timeline-bar {
   position: absolute;
@@ -166,8 +176,7 @@ export default {
   top: 0;
   height: 100%;
   width: 10px;
-  background: grey;
-  cursor: pointer;
+  background: lightskyblue;
   transition-property: 'left';
   transition-timing-function: linear;
 }
@@ -176,8 +185,8 @@ export default {
 }
 .video-body {
   position: relative;
-  width: calc(1.6 * 200px);
-  height: calc(0.9 * 200px);
+  width: 310px;
+  height: calc(310px / 16 * 9);
   background: black;
 }
 .video-body video {

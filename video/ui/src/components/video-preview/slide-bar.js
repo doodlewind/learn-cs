@@ -2,6 +2,7 @@ import { Observable } from 'rxjs'
 
 const noop = () => {}
 const clamp = (a, b, c) => Math.max(a, Math.min(b, c))
+const THROTTLE_TIME = 100
 
 export class SlideBar {
   constructor ({
@@ -27,7 +28,7 @@ export class SlideBar {
 
     const moves = Observable
       .fromEvent(window, 'mousemove')
-      .throttleTime(300)
+      .throttleTime(THROTTLE_TIME)
       .map(this.toProgress)
 
     const ends = Observable

@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { Observable } from 'rxjs'
 
 export function getVideoDuration (url) {
