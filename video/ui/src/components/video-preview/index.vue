@@ -15,7 +15,6 @@
     <div class="timeline-wrapper">
       <div
         class="timeline-bar"
-        @mousedown.prevent="onBarMouseDown"
         ref="bar"
         :style="{
           left: nextPosition + '%',
@@ -43,6 +42,7 @@ import {
   STOP_CLIP
 } from './clipline'
 import Debug from 'debug'
+import { SlideBar } from './slide-bar'
 
 const debug = Debug('video')
 
@@ -51,7 +51,6 @@ export default {
   data () {
     return {
       currentURL: '',
-      barPressed: false,
       nextPosition: 0,
       nextDuration: 0,
       duration: 0,
@@ -74,21 +73,29 @@ export default {
       this.clips = demoProject.clips
       this.duration = demoProject.duration
     }
+    // eslint-disable-next-line
+    new SlideBar({
+      bar: this.$refs.bar,
+      totalWidth: 300,
+      onSlideStart: this.pause,
+      onSlideChange: this.seek
+    })
   },
   methods: {
-    async play () {
+    play () {
+      this.setVideoState(false)
+    },
+    pause () {
+      this.setVideoState(true)
+    },
+    setVideoState (paused) {
       const clipline = new Clipline(this.clips)
-      const paused = false
       const currentTime = getCurrentTime(this.$refs.bar, this.duration)
       const timers = clipline.getTimers(currentTime, paused)
       this.subscribeStream(timers)
     },
-    pause () {
-      const clipline = new Clipline(this.clips)
-      const paused = true
-      const currentTime = getCurrentTime(this.$refs.bar, this.duration)
-      const timers = clipline.getTimers(currentTime, paused)
-      this.subscribeStream(timers)
+    seek (percentage) {
+      console.log('seeking', percentage)
     },
     playVideo (url) {
       // 分别处理初始加载、切换新视频与继续播放当前视频的情形
@@ -141,27 +148,6 @@ export default {
           }
         }
       })
-    },
-    onBarMouseDown (e) {
-      this.barPressed = true
-      const baseX = e.clientX
-      let offset = 0
-      const onMouseMove = (e) => {
-        offset = e.clientX - baseX
-      }
-      const onMouseUp = (e) => {
-        this.barPressed = false
-        console.log(offset)
-        window.removeEventListener('mousemove', onMouseMove)
-        window.removeEventListener('mouseup', onMouseUp)
-      }
-      window.addEventListener('mousemove', onMouseMove)
-      window.addEventListener('mouseup', onMouseUp)
-    }
-  },
-  watch: {
-    barPressed (oldVal, newVal) {
-      if (!newVal) this.pause()
     }
   }
 }
