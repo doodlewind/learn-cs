@@ -19,6 +19,7 @@ export class SlideBar {
     this.startSlide = this.startSlide.bind(this)
     this.toProgress = this.toProgress.bind(this)
     this.endSlide = this.endSlide.bind(this)
+    this.reset = this.reset.bind(this)
 
     const starts = Observable
       .fromEvent(bar, 'mousedown')
@@ -34,9 +35,9 @@ export class SlideBar {
       .do((e) => this.endSlide(e, onSlideEnd))
 
     // Get changes stream by clamping moves stream with starts and ends.
-    this.changes = starts
+    const changes = starts
       .concatMap(() => moves.takeUntil(ends.first()))
-    this.changes.subscribe(progress => onSlideChange(progress))
+    this.subscriber = changes.subscribe(progress => onSlideChange(progress))
   }
 
   startSlide (e, onSlideStart) {
@@ -56,7 +57,8 @@ export class SlideBar {
     onSlideEnd(e)
   }
 
-  unsubscribe () {
-    this.changes.unsubscribe()
+  reset () {
+    if (!this.subscriber) return
+    this.subscriber.unsubscribe()
   }
 }
