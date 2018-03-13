@@ -16,5 +16,6 @@ tar -cvf result.tar ./results/*
 python -m SimpleHTTPServer 10000
 # Download tar file and unzip.
 
-node post-process.js
+node post-process.js results/20180228/**/*.json
+json2csv -i result.json > result.csv
 ```

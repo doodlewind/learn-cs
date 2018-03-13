@@ -1,8 +1,7 @@
 // Usage:
 // ```
-// node post-process.js "20180228/**/*.json" && json2csv -i result.json > result.csv`
+// node post-process.js results/20180228/**/*.json
 // ```
-// Please globally install json2csv for csv output.
 
 const glob = require('glob')
 const fs = require('fs')
@@ -18,6 +17,7 @@ function sanitize (obj) {
 
 const results = []
 glob(pattern, (err, fileNames) => {
+  console.log(fileNames)
   if (err) throw err
   fileNames.forEach(fileName => {
     const file = fs.readFileSync(fileName)
