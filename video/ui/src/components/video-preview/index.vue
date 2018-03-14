@@ -43,6 +43,7 @@ import {
 } from './clip-model'
 import Debug from 'debug'
 import { SlideBar } from './slide-bar'
+import { VideoAdapter } from './video-adapter'
 
 const debug = Debug('video')
 
@@ -60,10 +61,11 @@ export default {
   },
   created () {
     this.clipModel = new ClipModel()
+    this.videoAdapter = new VideoAdapter()
     this.subscriber = null
   },
   mounted () {
-    const DEBUG_USE_MOCK = false
+    const DEBUG_USE_MOCK = true
     if (DEBUG_USE_MOCK) {
       this.clipModel.setClips(demoProject.clips)
       this.duration = demoProject.duration
@@ -132,6 +134,7 @@ export default {
       debug('states', states)
       const timelineStream = initStream(states)
       this.subscriber = timelineStream.subscribe(state => {
+        this.videoAdapter.setState(state)
         debug('event', state)
         switch (state.type) {
           case PLAY_CLIP: {
