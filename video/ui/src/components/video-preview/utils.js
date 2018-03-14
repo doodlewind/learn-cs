@@ -39,9 +39,9 @@ export function getCurrentTime (bar, duration) {
   return duration * currentPercentage
 }
 
-export function initStream (timers) {
+export function initStream (states) {
   return Observable
-    .from(timers)
+    .from(states)
     .flatMap(timer => (
       Observable.timer(timer.interval * 1e3)).map(() => timer)
     )

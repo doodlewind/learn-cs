@@ -79,18 +79,18 @@ export default {
   methods: {
     play () {
       const currentTime = getCurrentTime(this.$refs.bar, this.duration)
-      const timers = this.clipModel.getPlayTimers(currentTime)
-      this.subscribeStream(timers)
+      const states = this.clipModel.getPlayStates(currentTime)
+      this.subscribeStream(states)
     },
     pause () {
       const currentTime = getCurrentTime(this.$refs.bar, this.duration)
-      const timers = this.clipModel.getPausedTimers(currentTime)
-      this.subscribeStream(timers)
+      const states = this.clipModel.getPausedStates(currentTime)
+      this.subscribeStream(states)
     },
     seek (percentage) {
       const time = this.duration * percentage
-      const timers = this.clipModel.getSeekTimers(time)
-      this.subscribeStream(timers)
+      const states = this.clipModel.getSeekStates(time)
+      this.subscribeStream(states)
     },
     playVideo (url) {
       // 分别处理初始加载、切换新视频与继续播放当前视频的情形
@@ -127,18 +127,18 @@ export default {
       this.clipModel.setClips(clips)
       this.duration = duration
     },
-    subscribeStream (timers) {
+    subscribeStream (states) {
       if (this.subscriber) this.subscriber.unsubscribe()
-      debug('timers', timers)
-      const timelineStream = initStream(timers)
-      this.subscriber = timelineStream.subscribe(event => {
-        debug('event', event)
-        switch (event.type) {
+      debug('states', states)
+      const timelineStream = initStream(states)
+      this.subscriber = timelineStream.subscribe(state => {
+        debug('event', state)
+        switch (state.type) {
           case PLAY_CLIP: {
-            const { position, start, end, url } = event.clip
+            const { position, start, end, url } = state.clip
             this.playVideo(url)
             this.nextPosition = (position + end - start) / this.duration * 100
-            this.nextDuration = event.duration
+            this.nextDuration = state.duration
             break
           }
           case STOP_CLIP: {
@@ -149,8 +149,8 @@ export default {
             break
           }
           case SEEK_CLIP: {
-            const { time, from } = event
-            this.seekVideo(event.clip.url, from)
+            const { time, from } = state
+            this.seekVideo(state.clip.url, from)
             this.nextDuration = 0
             this.nextPosition = time / this.duration * 100
             break

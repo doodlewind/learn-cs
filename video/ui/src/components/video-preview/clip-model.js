@@ -10,60 +10,60 @@ function getCurrentClips (clips, currentTime) {
   return currentClips
 }
 
-function getFutureTimers (clips, currentTime) {
+function getFutureStates (clips, currentTime) {
   const futureClips = clips.filter(({ position }) => {
     return position > currentTime
   })
-  const futureTimers = futureClips.map(clip => ({
+  const futureStates = futureClips.map(clip => ({
     type: PLAY_CLIP,
     interval: clip.position - currentTime,
     duration: clip.end - clip.start,
     clip
   }))
-  return futureTimers
+  return futureStates
 }
 
 export class ClipModel {
   constructor () {
     this.clips = []
-    this.getPlayTimers = this.getPlayTimers.bind(this)
-    this.getPausedTimers = this.getPausedTimers.bind(this)
-    this.getSeekTimers = this.getSeekTimers.bind(this)
+    this.getPlayStates = this.getPlayStates.bind(this)
+    this.getPausedStates = this.getPausedStates.bind(this)
+    this.getSeekStates = this.getSeekStates.bind(this)
   }
 
   setClips (clips) {
     this.clips = clips
   }
 
-  getPlayTimers (currentTime = 0) {
+  getPlayStates (currentTime = 0) {
     const currentClips = getCurrentClips(this.clips, currentTime)
-    const currentTimers = currentClips.map(clip => ({
+    const currentStates = currentClips.map(clip => ({
       type: PLAY_CLIP,
       interval: 0,
       duration: clip.end - clip.start - (currentTime - clip.position),
       clip
     }))
-    const futureTimers = getFutureTimers(this.clips, currentTime)
-    return [...currentTimers, ...futureTimers]
+    const futureStates = getFutureStates(this.clips, currentTime)
+    return [...currentStates, ...futureStates]
   }
 
-  getPausedTimers (currentTime = 0) {
+  getPausedStates (currentTime = 0) {
     const currentClips = getCurrentClips(this.clips, currentTime)
-    const currentTimers = currentClips.map(clip => ({
+    const currentStates = currentClips.map(clip => ({
       type: STOP_CLIP,
       clip
     }))
-    return currentTimers
+    return currentStates
   }
 
-  getSeekTimers (time = 0) {
+  getSeekStates (time = 0) {
     const currentClips = getCurrentClips(this.clips, time)
-    const seekTimers = currentClips.map(clip => ({
+    const seekStates = currentClips.map(clip => ({
       type: SEEK_CLIP,
       time,
       from: time - clip.position,
       clip
     }))
-    return seekTimers
+    return seekStates
   }
 }
