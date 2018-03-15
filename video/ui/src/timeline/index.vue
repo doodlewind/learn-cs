@@ -5,7 +5,8 @@
   
   <script>
   export default {
-    name: 'Tineline'
+    name: 'Tineline',
+    props: ['clips']
   }
   </script>
   
