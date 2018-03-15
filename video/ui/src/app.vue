@@ -8,9 +8,7 @@
           @fileDeleted="onFileDeleted"
         />
       </div>
-      <timeline
-        :clips="clips"
-      />
+      <timeline/>
     </div>
   </div>
 </template>
@@ -19,17 +17,20 @@
 import Preview from './preview'
 import Picker from './picker'
 import Timeline from './timeline'
+import { model } from './timeline/model'
 
 export default {
   name: 'App',
   data () {
     return {
+      paused: true,
+      currentTime: 0,
       clips: []
     }
   },
   methods: {
     onFileUsed (file) {
-      console.log('TODO use', file)
+      model.pushFile(file)
     },
     onFileDeleted (file) {
       console.log('TODO delete', file)
