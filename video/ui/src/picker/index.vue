@@ -53,10 +53,10 @@ export default {
       })
     },
     useFile (i) {
-      this.$emit('fileUsed', this.files[i])
+      this.$emit('fileUsed', this.files[i].file)
     },
     removeFile (i) {
-      this.$emit('fileDeleted', this.files[i])
+      this.$emit('fileDeleted', this.files[i].file)
       this.files.splice(i, 1)
     }
   }

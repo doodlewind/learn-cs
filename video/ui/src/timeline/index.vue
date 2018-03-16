@@ -1,5 +1,6 @@
 <template>
   <div class="timeline-wrapper">
+    <button @click="play" class="btn">play</button>
   </div>
 </template>
 
@@ -14,8 +15,13 @@ export default {
     })
   },
   methods: {
-    onUpdateClips (clips) {
-      console.log(clips)
+    onUpdateClips (clips, duration) {
+      console.log(clips, duration)
+    },
+    play () {
+      // debug
+      window.model = model
+      model.play()
     }
   }
 }
