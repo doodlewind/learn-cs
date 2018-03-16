@@ -62,6 +62,7 @@ class TimelineModel {
 
   play () {
     this.paused = false
+    // MOCK
     this.states = [
       {
         type: 'PLAY',
@@ -116,7 +117,7 @@ class TimelineModel {
     const clip = await file2Clip(file, this.duration)
     this.duration = clip.position + (clip.end - clip.start)
     this.clips.push(clip)
-    this.onUpdateClips(this.duration, this.clips)
+    this.onUpdateClips()
   }
 
   subscribe ({

@@ -48,6 +48,7 @@ export default {
 body, html {
   margin: 0;
   background: #f4f4f4;
+  font-size: 12px;
 }
 .app {
   background: white;
