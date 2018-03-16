@@ -5,9 +5,18 @@
       <div>{{ flag }}</div>
       <!-- <div>{{ time }}</div> -->
     </div>
-    <div class="timeline-clips">
-      <div class="timeline-clip" v-for="clip in clips">
-        {{ clip.position }} - {{ clip.end }}
+    <div class="clips-container">
+      <div
+        class="clips"
+        :style="{
+          width: containerWidth
+        }"
+      >
+        <div class="clip" v-for="clip in clips">
+          {{ clip.position.toFixed(2) }}s
+          -
+          {{ (clip.position + clip.end - clip.start).toFixed(2) }}s
+        </div>
       </div>
     </div>
   </div>
@@ -31,9 +40,14 @@ export default {
       flag: ''
     }
   },
+  computed: {
+    containerWidth () {
+      return this.clips.length * 200 + 'px'
+    }
+  },
   methods: {
-    onUpdateClips () {
-      this.clips = model.clips
+    onUpdateClips (clips) {
+      this.clips = clips
     },
     play () {
       // debug
@@ -65,11 +79,20 @@ export default {
   width: 60px;
   background: lightskyblue;
 }
-.timeline-clips {
+.clips-container {
+  width: 100%;
+  height: 175px;
+  overflow-x: auto;
+}
+.clips {
   display: flex;
+  height: 100%;
   align-items: center;
 }
-.timeline-clip {
-  background: #ccc;
+.clip {
+  margin: 10px;
+  width: 180px;
+  height: 70px;
+  background: white;
 }
 </style>
