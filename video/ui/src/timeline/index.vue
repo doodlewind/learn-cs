@@ -3,7 +3,7 @@
     <div class="debug-menu">
       <button @click="play" class="btn">play</button>
       <div>{{ flag }}</div>
-      <!-- <div>{{ time }}</div> -->
+      <div>{{ time }}</div>
     </div>
     <div class="clips-container">
       <div
@@ -57,7 +57,9 @@ export default {
     },
     renderTick (tick) {
       const { ts, state } = tick
-      this.time = parseInt(ts)
+      if (state.type === 'INIT') return
+
+      this.time = parseInt(model.duration * 1e3 - (ts - state.ts))
       this.flag = state.type
     }
   }

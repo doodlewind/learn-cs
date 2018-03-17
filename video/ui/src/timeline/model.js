@@ -63,6 +63,7 @@ class TimelineModel {
   play () {
     this.paused = false
     // TODO compute new states from clips
+    this.duration = 20
     this.states = [
       {
         type: 'PLAY',
