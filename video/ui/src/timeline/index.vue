@@ -12,6 +12,7 @@
           width: containerWidth
         }"
       >
+        <div class="clip-bar"></div>
         <div class="clip" v-for="clip in clips">
           {{ clip.position.toFixed(2) }}s
           -
@@ -85,13 +86,27 @@ export default {
   overflow-x: auto;
 }
 .clips {
+  position: relative;
   display: flex;
   height: 100%;
   align-items: center;
 }
+.clip-bar {
+  position: absolute;
+  height: 100%;
+  width: 5px;
+  top: 0;
+  background: lightskyblue;
+  opacity: 0.6;
+  cursor: col-resize;
+}
 .clip {
-  margin: 10px;
-  width: 180px;
+  margin-left: 0;
+  border-top: 5px #ccc solid;
+  border-bottom: 5px #ccc solid;
+  border-right: 5px #ccc solid;
+  padding-left: 10px;
+  width: 190px;
   height: 70px;
   background: white;
 }
