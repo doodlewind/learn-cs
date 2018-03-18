@@ -21,13 +21,6 @@ import { model } from './timeline/model'
 
 export default {
   name: 'App',
-  data () {
-    return {
-      paused: true,
-      currentTime: 0,
-      clips: []
-    }
-  },
   methods: {
     onFileUsed (file) {
       model.pushFile(file)
