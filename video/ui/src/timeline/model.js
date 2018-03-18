@@ -46,13 +46,11 @@ const INIT_STATE = {
 
 class TimelineModel {
   constructor () {
-    this.paused = true
     this.duration = 0
     this.currentTime = 0
     this.clips = []
     this.ts = 0
-    this.currentState = INIT_STATE
-    this.states = [this.currentState]
+    this.state = INIT_STATE
 
     this.tick = this.tick.bind(this)
     this.play = this.play.bind(this)
@@ -61,31 +59,13 @@ class TimelineModel {
   }
 
   play () {
-    this.paused = false
-    // TODO compute new states from clips
     this.duration = 20
-    this.states = [
-      {
-        type: 'PLAY',
-        ts: this.ts,
-        duration: 10,
-        clip: {
-          position: 0,
-          start: 0,
-          end: 10
-        }
-      },
-      {
-        type: 'PLAY',
-        ts: this.ts + 10e3,
-        duration: 10,
-        clip: {
-          position: 0,
-          start: 0,
-          end: 10
-        }
-      }
-    ]
+    this.state = {
+      type: 'PLAY',
+      ts: this.ts,
+      // FIXME calculate base time.
+      baseTime: 0
+    }
   }
 
   tick (ts) {
@@ -93,24 +73,20 @@ class TimelineModel {
     this.updateState()
     this.onTick({
       ts: this.ts,
-      state: this.currentState
+      state: this.state
     })
     window.requestAnimationFrame(this.tick)
   }
 
   updateState () {
-    const newState = this.states.find(state => {
-      return (
-        this.ts - state.ts > 0 &&
-        this.ts - state.ts <= state.duration * 1e3
-      )
-    })
+    // FIXME calculate new state.
+    const newState = this.state
 
     if (!newState) {
-      this.currentState = INIT_STATE
+      this.state = INIT_STATE
       this.states = [INIT_STATE]
     } else {
-      this.currentState = newState
+      this.state = newState
     }
   }
 
