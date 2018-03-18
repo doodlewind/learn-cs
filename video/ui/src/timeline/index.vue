@@ -58,7 +58,6 @@ export default {
     renderTick (tick) {
       const { ts, state } = tick
       if (state.type === 'INIT') return
-
       this.time = parseInt(model.duration * 1e3 - (ts - state.ts))
       this.flag = state.type
     }

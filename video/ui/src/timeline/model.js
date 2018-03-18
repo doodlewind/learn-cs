@@ -26,14 +26,12 @@ function getVideoDuration (url) {
 
 async function file2Clip (file, position) {
   if (IS_NODE) return getMockFile(position)
-
   const url = window.URL.createObjectURL(file)
-  const duration = await getVideoDuration(url)
   return {
     name: file.name,
     position,
     start: 0,
-    end: duration,
+    end: await getVideoDuration(url),
     url
   }
 }
@@ -41,15 +39,14 @@ async function file2Clip (file, position) {
 const INIT_STATE = {
   type: 'INIT',
   ts: 0,
-  duration: Infinity
+  basePosition: 0
 }
 
 class TimelineModel {
   constructor () {
-    this.duration = 0
-    this.currentTime = 0
-    this.clips = []
     this.ts = 0
+    this.clips = []
+    this.currentTime = 0
     this.state = INIT_STATE
 
     this.tick = this.tick.bind(this)
@@ -58,13 +55,23 @@ class TimelineModel {
     window.requestAnimationFrame(this.tick)
   }
 
+  get duration () {
+    if (!this.clips.length) return 0
+    return Math.max(...this.clips.map(
+      ({ position, start, end }) => position + end - start)
+    )
+  }
+
+  get progress () {
+    return 0
+  }
+
   play () {
-    this.duration = 20
     this.state = {
       type: 'PLAY',
       ts: this.ts,
-      // FIXME calculate base time.
-      baseTime: 0
+      // FIXME calculate args state.
+      basePosition: 0
     }
   }
 
@@ -92,7 +99,6 @@ class TimelineModel {
 
   async pushFile (file) {
     const clip = await file2Clip(file, this.duration)
-    this.duration = clip.position + (clip.end - clip.start)
     this.clips.push(clip)
     this.onUpdateClips(this.clips)
   }
