@@ -2,7 +2,9 @@ import {
   noop,
   clamp,
   loop,
-  file2Clip
+  getNextVideos,
+  file2Clip,
+  shouldVideosUpdate
 } from './utils'
 
 const INIT = 'INIT'
@@ -15,6 +17,10 @@ export class Editor {
     // states
     this.ts = 0
     this.clips = []
+    this.buffer = {
+      videos: [],
+      preset: null
+    }
     this.state = {
       type: INIT,
       base: { ts: 0, position: 0 }
@@ -88,14 +94,31 @@ export class Editor {
 
   setState (newState) {
     if (!this.clips.length) return
-    // TODO trigger current videos callback.
+
+    const basePosition = newState.base.position
+    this.buffer.videos = getNextVideos(this.clips, basePosition)
+
+    this.updateVideoCallbacks.forEach(fn => fn(
+      newState.type, this.buffer.videos
+    ))
+
     this.state = newState
   }
 
   tick (ts) {
     this.ts = ts
-    // TODO trigger current videos callback.
     this.tickCallbacks.forEach(cb => cb())
+
+    const currentTime = this.progress * this.duration
+    const nextVideos = getNextVideos(this.clips, currentTime)
+    // Emit video update events by diffing in each tick.
+    if (shouldVideosUpdate(this.buffer.videos, nextVideos)) {
+      this.buffer.videos = nextVideos
+      this.updateVideoCallbacks.forEach(fn => fn(
+        this.state.type, this.buffer.videos
+      ))
+    }
+
     loop(this.tick)
   }
 
