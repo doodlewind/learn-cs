@@ -1,7 +1,12 @@
 <template>
   <div class="timeline-wrapper">
     <div class="debug-menu">
-      <button @click="toggle" class="btn">{{ toggleText }}</button>
+      <button @click="togglePaused" class="btn play">
+        {{ pausedText }}
+      </button>
+      <button @click="togglePreset" class="btn preset">
+          preset {{ presetText }}
+        </button>
       <div>{{ currentTime.toFixed(2) }}s</div>
     </div>
     <div class="clips-container">
@@ -16,7 +21,11 @@
           :style="{ left: progress + '%' }"
         >
         </div>
-        <div class="clip" v-for="clip in clips">
+        <div
+          class="clip"
+          v-for="clip in clips"
+          :style="{ background: clip.color }"
+        >
           {{ clip.position.toFixed(2) }}s
           -
           {{ (clip.position + clip.end - clip.start).toFixed(2) }}s
@@ -29,6 +38,7 @@
 <script>
 // Global editor singleton.
 import { editor } from './editor'
+import { randomColor } from './utils'
 
 export default {
   name: 'Tineline',
@@ -42,10 +52,10 @@ export default {
   data () {
     return {
       paused: true,
+      hasPreset: false,
       clips: [],
       duration: 0,
-      progress: 0,
-      flag: ''
+      progress: 0
     }
   },
   computed: {
@@ -53,8 +63,11 @@ export default {
       if (!this.duration) return 0
       return this.progress * this.duration / 100
     },
-    toggleText () {
+    pausedText () {
       return this.paused ? 'play' : 'stop'
+    },
+    presetText () {
+      return this.hasPreset ? 'on' : 'off'
     },
     containerWidth () {
       return this.clips.length * 100 + 'px'
@@ -63,11 +76,17 @@ export default {
   methods: {
     onUpdateClips () {
       this.duration = editor.duration
-      this.clips = editor.clips
+      this.clips = editor.clips.map(clip => (
+        { ...clip, color: randomColor() }
+      ))
     },
-    toggle () {
+    togglePaused () {
       this.paused ? editor.play() : editor.stop()
       this.paused = !this.paused
+    },
+    togglePreset () {
+      this.hasPreset = !this.hasPreset
+      // TODO toggle editor presets.
     },
     renderTick () {
       this.progress = editor.progress * 100
@@ -79,7 +98,7 @@ export default {
 <style scoped>
 .timeline-wrapper {
   background: #e1e1e1;
-  height: 200px;
+  height: 100px;
 }
 .debug-menu {
   display: flex;
@@ -88,13 +107,21 @@ export default {
   background: #f2f2f2;
 }
 .btn {
-  margin-right: 10px;
-  width: 60px;
+  padding-left: 10px;
+  padding-right: 10px;
   background: lightskyblue;
+}
+.btn-play {
+  width: 70px;
+}
+.btn.preset {
+  width: 80px;
+  margin-right: 10px;
+  background: lightpink;
 }
 .clips-container {
   width: 100%;
-  height: 175px;
+  height: 75px;
   overflow-x: auto;
 }
 .clips {
@@ -115,9 +142,7 @@ export default {
 .clip {
   flex: 1;
   margin-left: 0;
-  border-top: 5px #ccc solid;
-  border-bottom: 5px #ccc solid;
-  border-right: 5px #ccc solid;
+  padding-top: 10px;
   padding-left: 10px;
   height: 70px;
   background: white;

@@ -20,6 +20,7 @@ export class Editor {
     }
 
     // callbacks
+    this.updateVideoCallbacks = []
     this.updateClipCallbacks = []
     this.tickCallbacks = []
 
@@ -27,6 +28,7 @@ export class Editor {
     this.tick = this.tick.bind(this)
     this.play = this.play.bind(this)
     this.stop = this.stop.bind(this)
+    this.setState = this.setState.bind(this)
     this.pushFile = this.pushFile.bind(this)
     this.subscribe = this.subscribe.bind(this)
     loop(this.tick)
@@ -57,30 +59,29 @@ export class Editor {
     }
   }
 
-  play () {
-    if (!this.clips.length) return
-    this.state = {
+  play (progress = this.progress) {
+    this.setState({
       type: PLAY,
-      base: {
-        ts: this.ts,
-        position: this.progress * this.duration
-      }
-    }
+      base: { ts: this.ts, position: progress * this.duration }
+    })
   }
 
-  stop () {
-    if (!this.clips.length) return
-    this.state = {
+  stop (progress = this.progress) {
+    this.setState({
       type: STOP,
-      base: {
-        ts: this.ts,
-        position: this.progress * this.duration
-      }
-    }
+      base: { ts: this.ts, position: progress * this.duration }
+    })
+  }
+
+  setState (newState) {
+    if (!this.clips.length) return
+    // TODO trigger current videos callback.
+    this.state = newState
   }
 
   tick (ts) {
     this.ts = ts
+    // TODO trigger current videos callback.
     this.tickCallbacks.forEach(cb => cb())
     loop(this.tick)
   }
@@ -93,8 +94,10 @@ export class Editor {
 
   subscribe ({
     onTick = noop,
+    onUpdateVideos = noop,
     onUpdateClips = noop
   }) {
+    this.updateVideoCallbacks.push(onUpdateVideos)
     this.updateClipCallbacks.push(onUpdateClips)
     this.tickCallbacks.push(onTick)
   }
