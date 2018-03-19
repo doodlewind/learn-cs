@@ -9,24 +9,26 @@ const INIT = 'INIT'
 const PLAY = 'PLAY'
 const STOP = 'STOP'
 
-const INIT_STATE = {
-  type: 'INIT',
-  base: {
-    ts: 0,
-    position: 0
-  }
-}
-
 export class Editor {
   constructor () {
+    // states
     this.ts = 0
     this.clips = []
-    this.currentTime = 0
-    this.state = INIT_STATE
+    this.state = {
+      type: INIT,
+      base: { ts: 0, position: 0 }
+    }
 
+    // callbacks
+    this.updateClipCallbacks = []
+    this.tickCallbacks = []
+
+    // methods
     this.tick = this.tick.bind(this)
     this.play = this.play.bind(this)
     this.stop = this.stop.bind(this)
+    this.pushFile = this.pushFile.bind(this)
+    this.subscribe = this.subscribe.bind(this)
     loop(this.tick)
   }
 
@@ -79,25 +81,22 @@ export class Editor {
 
   tick (ts) {
     this.ts = ts
-    this.onTick({
-      ts: this.ts,
-      state: this.state
-    })
+    this.tickCallbacks.forEach(cb => cb())
     loop(this.tick)
   }
 
   async pushFile (file) {
     const clip = await file2Clip(file, this.duration)
     this.clips.push(clip)
-    this.onUpdateClips()
+    this.updateClipCallbacks.forEach(cb => cb())
   }
 
   subscribe ({
     onTick = noop,
     onUpdateClips = noop
   }) {
-    this.onUpdateClips = onUpdateClips
-    this.onTick = onTick
+    this.updateClipCallbacks.push(onUpdateClips)
+    this.tickCallbacks.push(onTick)
   }
 }
 
