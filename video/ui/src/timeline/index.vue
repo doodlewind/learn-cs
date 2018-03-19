@@ -57,7 +57,7 @@ export default {
       return this.paused ? 'play' : 'stop'
     },
     containerWidth () {
-      return this.clips.length * 200 + 'px'
+      return this.clips.length * 100 + 'px'
     }
   },
   methods: {
@@ -113,12 +113,12 @@ export default {
   cursor: col-resize;
 }
 .clip {
+  flex: 1;
   margin-left: 0;
   border-top: 5px #ccc solid;
   border-bottom: 5px #ccc solid;
   border-right: 5px #ccc solid;
   padding-left: 10px;
-  width: 190px;
   height: 70px;
   background: white;
 }
