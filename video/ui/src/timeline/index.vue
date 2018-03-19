@@ -1,9 +1,8 @@
 <template>
   <div class="timeline-wrapper">
     <div class="debug-menu">
-      <button @click="play" class="btn">play</button>
-      <div>{{ flag }}</div>
-      <div>{{ time }}</div>
+      <button @click="toggle" class="btn">{{ toggleText }}</button>
+      <div>{{ currentTime.toFixed(2) }}s</div>
     </div>
     <div class="clips-container">
       <div
@@ -28,40 +27,50 @@
 </template>
 
 <script>
-import { model } from './model'
+// Global editor singleton.
+import { editor } from './editor'
 
 export default {
   name: 'Tineline',
   created () {
-    model.subscribe({
+    window.editor = editor
+    editor.subscribe({
       onUpdateClips: this.onUpdateClips,
       onTick: this.renderTick
     })
   },
   data () {
     return {
-      time: 0,
+      paused: true,
       clips: [],
+      duration: 0,
       progress: 0,
       flag: ''
     }
   },
   computed: {
+    currentTime () {
+      if (!this.duration) return 0
+      return this.progress * this.duration / 100
+    },
+    toggleText () {
+      return this.paused ? 'play' : 'stop'
+    },
     containerWidth () {
       return this.clips.length * 200 + 'px'
     }
   },
   methods: {
-    onUpdateClips (clips) {
-      this.clips = clips
+    onUpdateClips () {
+      this.duration = editor.duration
+      this.clips = editor.clips
     },
-    play () {
-      // debug
-      window.model = model
-      model.play()
+    toggle () {
+      this.paused = !this.paused
+      editor.play()
     },
-    renderTick (tick) {
-      this.progress = model.progress * 100
+    renderTick () {
+      this.progress = editor.progress * 100
     }
   }
 }

@@ -4,10 +4,7 @@ export const noop = () => {}
 
 export const clamp = (a, b, c) => Math.max(a, Math.min(b, c))
 
-export const loop = (fn) => {
-  if (IS_NODE) window.requestAnimationFrame(fn)
-  else setTimeout(() => fn(), 10e3 / 60)
-}
+export const loop = window.requestAnimationFrame
 
 const MOCK_DURATION = 10
 

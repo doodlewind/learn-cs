@@ -17,13 +17,13 @@
 import Preview from './preview'
 import Picker from './picker'
 import Timeline from './timeline'
-import { model } from './timeline/model'
+import { editor } from './timeline/editor'
 
 export default {
   name: 'App',
   methods: {
     onFileUsed (file) {
-      model.pushFile(file)
+      editor.pushFile(file)
     },
     onFileDeleted (file) {
       console.log('TODO delete', file)

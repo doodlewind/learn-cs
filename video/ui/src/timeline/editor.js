@@ -11,14 +11,13 @@ const PLAY = 'PLAY'
 
 const INIT_STATE = {
   type: 'INIT',
-  ts: 0,
   base: {
     ts: 0,
     position: 0
   }
 }
 
-export class TimelineModel {
+export class Editor {
   constructor () {
     this.ts = 0
     this.clips = []
@@ -44,10 +43,15 @@ export class TimelineModel {
     const currentPostion = (
       this.state.base.position + (this.ts - this.state.base.ts) / 1e3
     )
+    if (isNaN(currentPostion)) {
+      debugger // eslint-disable-line
+    }
     return clamp(0, currentPostion / this.duration, 1)
   }
 
   play () {
+    if (!this.clips.length) return
+
     this.state = {
       type: PLAY,
       base: {
@@ -73,7 +77,6 @@ export class TimelineModel {
 
     if (!newState) {
       this.state = INIT_STATE
-      this.states = [INIT_STATE]
     } else {
       this.state = newState
     }
@@ -82,7 +85,7 @@ export class TimelineModel {
   async pushFile (file) {
     const clip = await file2Clip(file, this.duration)
     this.clips.push(clip)
-    this.onUpdateClips(this.clips)
+    this.onUpdateClips()
   }
 
   subscribe ({
@@ -94,4 +97,4 @@ export class TimelineModel {
   }
 }
 
-export const model = new TimelineModel()
+export const editor = new Editor()
