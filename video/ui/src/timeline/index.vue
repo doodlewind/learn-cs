@@ -66,8 +66,8 @@ export default {
       this.clips = editor.clips
     },
     toggle () {
+      this.paused ? editor.play() : editor.stop()
       this.paused = !this.paused
-      editor.play()
     },
     renderTick () {
       this.progress = editor.progress * 100
