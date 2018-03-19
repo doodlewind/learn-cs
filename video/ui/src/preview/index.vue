@@ -12,6 +12,8 @@ export default {
   mounted () {
     const $canvas = this.$el.children[0]
     this.renderer = new Renderer($canvas)
+    // debug
+    window.renderer = this.renderer
     editor.subscribe({
       onTick: this.renderer.render,
       onUpdateVideos: this.renderer.updateVideos
