@@ -8,6 +8,7 @@ import {
 const INIT = 'INIT'
 const PLAY = 'PLAY'
 const STOP = 'STOP'
+const PRESET_OFFSET = 1
 
 export class Editor {
   constructor () {
@@ -28,6 +29,7 @@ export class Editor {
     this.tick = this.tick.bind(this)
     this.play = this.play.bind(this)
     this.stop = this.stop.bind(this)
+    this.setPreset = this.setPreset.bind(this)
     this.setState = this.setState.bind(this)
     this.pushFile = this.pushFile.bind(this)
     this.subscribe = this.subscribe.bind(this)
@@ -71,6 +73,17 @@ export class Editor {
       type: STOP,
       base: { ts: this.ts, position: progress * this.duration }
     })
+  }
+
+  // Mock clips preset.
+  setPreset (hasPreset) {
+    for (let i = 1; i < this.clips.length; i++) {
+      const prev = this.clips[i - 1]
+      this.clips[i].position = hasPreset
+        ? prev.position + prev.end - prev.start - PRESET_OFFSET
+        : prev.position + prev.end - prev.start
+    }
+    this.updateClipCallbacks.forEach(cb => cb())
   }
 
   setState (newState) {

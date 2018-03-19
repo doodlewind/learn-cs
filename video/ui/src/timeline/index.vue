@@ -85,8 +85,8 @@ export default {
       this.paused = !this.paused
     },
     togglePreset () {
+      this.hasPreset ? editor.setPreset(false) : editor.setPreset(true)
       this.hasPreset = !this.hasPreset
-      // TODO toggle editor presets.
     },
     renderTick () {
       this.progress = editor.progress * 100
