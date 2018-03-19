@@ -37,7 +37,7 @@
 
 <script>
 // Global editor singleton.
-import { editor } from '../editor'
+import { editor } from '../instax'
 import { randomColor } from './utils'
 
 export default {

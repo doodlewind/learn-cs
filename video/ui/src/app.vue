@@ -17,7 +17,7 @@
 import Preview from './preview'
 import Picker from './picker'
 import Timeline from './timeline'
-import { editor } from './editor'
+import { editor } from './instax'
 
 export default {
   name: 'App',
