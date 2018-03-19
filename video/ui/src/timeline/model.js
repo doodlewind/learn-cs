@@ -1,48 +1,24 @@
-const noop = () => {}
-const IS_NODE = (typeof module !== 'undefined' && module.exports)
-const MOCK_DURATION = 10
+import {
+  noop,
+  clamp,
+  loop,
+  file2Clip
+} from './utils'
 
-function getMockFile (position) {
-  return {
-    name: 'mock',
-    position,
-    start: 0,
-    end: MOCK_DURATION,
-    url: ''
-  }
-}
-
-function getVideoDuration (url) {
-  return new Promise((resolve, reject) => {
-    if (IS_NODE) return resolve(MOCK_DURATION)
-
-    const video = document.createElement('video')
-    video.src = url
-    video.addEventListener('loadedmetadata', (e) => {
-      resolve(video.duration)
-    })
-  })
-}
-
-async function file2Clip (file, position) {
-  if (IS_NODE) return getMockFile(position)
-  const url = window.URL.createObjectURL(file)
-  return {
-    name: file.name,
-    position,
-    start: 0,
-    end: await getVideoDuration(url),
-    url
-  }
-}
+const INIT = 'INIT'
+const PLAY = 'PLAY'
+// const STOP = 'STOP'
 
 const INIT_STATE = {
   type: 'INIT',
   ts: 0,
-  basePosition: 0
+  base: {
+    ts: 0,
+    position: 0
+  }
 }
 
-class TimelineModel {
+export class TimelineModel {
   constructor () {
     this.ts = 0
     this.clips = []
@@ -52,7 +28,7 @@ class TimelineModel {
     this.tick = this.tick.bind(this)
     this.play = this.play.bind(this)
     this.updateState = this.updateState.bind(this)
-    window.requestAnimationFrame(this.tick)
+    loop(this.tick)
   }
 
   get duration () {
@@ -63,15 +39,21 @@ class TimelineModel {
   }
 
   get progress () {
-    return 0
+    if (this.state.type === INIT) return 0
+    if (this.duration === 0) return 0
+    const currentPostion = (
+      this.state.base.position + (this.ts - this.state.base.ts) / 1e3
+    )
+    return clamp(0, currentPostion / this.duration, 1)
   }
 
   play () {
     this.state = {
-      type: 'PLAY',
-      ts: this.ts,
-      // FIXME calculate args state.
-      basePosition: 0
+      type: PLAY,
+      base: {
+        ts: this.ts,
+        position: 0
+      }
     }
   }
 
@@ -82,7 +64,7 @@ class TimelineModel {
       ts: this.ts,
       state: this.state
     })
-    window.requestAnimationFrame(this.tick)
+    loop(this.tick)
   }
 
   updateState () {

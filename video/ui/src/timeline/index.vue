@@ -12,7 +12,11 @@
           width: containerWidth
         }"
       >
-        <div class="clip-bar"></div>
+        <div
+          class="clip-bar"
+          :style="{ left: progress + '%' }"
+        >
+        </div>
         <div class="clip" v-for="clip in clips">
           {{ clip.position.toFixed(2) }}s
           -
@@ -38,6 +42,7 @@ export default {
     return {
       time: 0,
       clips: [],
+      progress: 0,
       flag: ''
     }
   },
@@ -56,10 +61,7 @@ export default {
       model.play()
     },
     renderTick (tick) {
-      const { ts, state } = tick
-      if (state.type === 'INIT') return
-      this.time = parseInt(model.duration * 1e3 - (ts - state.ts))
-      this.flag = state.type
+      this.progress = model.progress * 100
     }
   }
 }
