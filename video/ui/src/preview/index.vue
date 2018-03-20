@@ -1,6 +1,6 @@
 <template>
   <div class="preview-wrapper">
-    <canvas width="320" height="240"></canvas>
+    <canvas width="320" height="180"></canvas>
   </div>
 </template>
 
@@ -24,8 +24,10 @@ export default {
 
 <style scoped>
 .preview-wrapper {
+  display: flex;
+  align-items: center;
   background: black;
   width: 320px;
-  height: 240px;
+  height: 180px;
 }
 </style>

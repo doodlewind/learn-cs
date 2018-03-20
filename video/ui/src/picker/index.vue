@@ -67,14 +67,14 @@ export default {
 .picker-container {
   flex: 1;
   background: white;
-  height: 240px;
+  height: 180px;
 }
 .picker-banner {
   display: flex;
   justify-content: flex-end;
 }
 .picker-list {
-  height: calc(240px - 25px);
+  height: calc(180px - 25px);
   overflow-y: auto;
 }
 .btn.add {
