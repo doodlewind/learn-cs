@@ -114,6 +114,7 @@ export default {
   background: #f2f2f2;
 }
 .btn {
+  margin-right: 5px;
   padding-left: 10px;
   padding-right: 10px;
   background: lightskyblue;
