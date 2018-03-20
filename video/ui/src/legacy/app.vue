@@ -65,7 +65,7 @@ export default {
     this.subscriber = null
   },
   mounted () {
-    const DEBUG_USE_MOCK = true
+    const DEBUG_USE_MOCK = false
     if (DEBUG_USE_MOCK) {
       this.clipModel.setClips(demoProject.clips)
       this.duration = demoProject.duration

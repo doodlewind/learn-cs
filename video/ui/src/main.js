@@ -2,6 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './app'
+// Legacy prototype.
+// import App from './legacy/app'
 
 Vue.config.productionTip = false
 
