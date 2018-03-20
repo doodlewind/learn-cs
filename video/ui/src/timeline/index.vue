@@ -14,7 +14,7 @@
       <div
         class="clips"
         :style="{
-          width: containerWidth
+          width: containerWidth + 'px'
         }"
       >
         <div
@@ -25,11 +25,12 @@
         <div
           class="clip"
           v-for="clip in clips"
-          :style="{ background: clip.color }"
+          :style="{
+            width: clip.width + 'px',
+            borderBottomColor: clip.color
+          }"
         >
-          {{ clip.position.toFixed(2) }}s
-          -
-          {{ (clip.position + clip.end - clip.start).toFixed(2) }}s
+          {{ (clip.end - clip.start).toFixed(2) }}s
         </div>
       </div>
     </div>
@@ -39,7 +40,7 @@
 <script>
 // Global editor singleton.
 import { editor } from '../instax'
-import { randomColor } from './utils'
+import { randomColor, getWidth } from './utils'
 
 export default {
   name: 'Tineline',
@@ -71,14 +72,14 @@ export default {
       return this.hasPreset ? 'on' : 'off'
     },
     containerWidth () {
-      return this.clips.length * 100 + 'px'
+      return this.clips.map(clip => clip.width).reduce((a, b) => a + b, 0)
     }
   },
   methods: {
     onUpdateClips () {
       this.duration = editor.duration
       this.clips = editor.clips.map(clip => (
-        { ...clip, color: randomColor() }
+        { ...clip, color: randomColor(), width: getWidth(clip) }
       ))
     },
     reset () {
@@ -148,11 +149,12 @@ export default {
   cursor: col-resize;
 }
 .clip {
-  flex: 1;
   margin-left: 0;
   padding-top: 10px;
   padding-left: 10px;
-  height: 70px;
+  height: 60px;
   background: white;
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
 }
 </style>
