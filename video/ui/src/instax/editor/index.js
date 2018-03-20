@@ -7,9 +7,10 @@ import {
   shouldVideosUpdate
 } from './utils'
 
-const INIT = 'INIT'
-const PLAY = 'PLAY'
-const STOP = 'STOP'
+export const INIT = 'INIT'
+export const PLAY = 'PLAY'
+export const STOP = 'STOP'
+
 const PRESET_OFFSET = 1
 
 export class Editor {
