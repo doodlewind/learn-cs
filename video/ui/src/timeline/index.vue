@@ -81,10 +81,12 @@ export default {
       ))
     },
     togglePaused () {
+      if (!this.clips.length) return
       this.paused ? editor.play() : editor.stop()
       this.paused = !this.paused
     },
     togglePreset () {
+      if (!this.clips.length) return
       this.hasPreset ? editor.setPreset(false) : editor.setPreset(true)
       this.hasPreset = !this.hasPreset
     },
