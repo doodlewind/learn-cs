@@ -23,14 +23,9 @@ export function initVideo (url, position = 0, paused = false) {
     }, true)
 
     video.src = url
-    if (!paused) video.play()
 
     function checkReady () {
       if (!(playingFlag && timeupdateFlag)) return
-
-      if (position !== 0) {
-        video.currentTime = position
-      }
       resolve(video)
     }
   })

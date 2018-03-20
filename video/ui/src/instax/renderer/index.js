@@ -25,18 +25,23 @@ export class Renderer {
   }
 
   async updateVideos (type, videos) {
-    // TODO clean up current textures and sources.
-    if (!videos.length) return
+    const paused = type !== PLAY
+    const promises = videos.map(v => initVideo(v.clip.url, v.position, paused))
 
-    Promise
-      .all(videos.map(
-        video => initVideo(video.clip.url, video.position, type !== PLAY)
-      ))
-      .then(sources => {
-        console.log('sources loaded')
-        this.sources = sources
-        // TODO update textures with new sources.
+    Promise.all(promises).then(sources => {
+      this.sources = sources
+      sources.forEach((source, i) => {
+        const { position } = videos[i]
+        if (position === 0 && !paused) source.play()
+        else if (position === 0 && paused) {
+          source.currentTime = position
+        } else if (position !== 0 && !paused) {
+          source.pause()
+          source.currentTime = position
+          source.play()
+        }
       })
+    })
   }
 
   render () {
@@ -46,8 +51,9 @@ export class Renderer {
       attributes,
       uniforms,
       buffers,
-      textures
+      textures,
+      sources
     } = this
-    render(gl, program, attributes, uniforms, buffers, textures)
+    render(gl, program, attributes, uniforms, buffers, textures, sources)
   }
 }
