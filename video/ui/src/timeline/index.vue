@@ -1,6 +1,7 @@
 <template>
   <div class="timeline-wrapper">
     <div class="debug-menu">
+      <button @click="reset" class="btn reset">reset</button>
       <button @click="togglePaused" class="btn play">
         {{ pausedText }}
       </button>
@@ -80,6 +81,10 @@ export default {
         { ...clip, color: randomColor() }
       ))
     },
+    reset () {
+      this.paused = true
+      editor.stop(0)
+    },
     togglePaused () {
       if (!this.clips.length) return
       this.paused ? editor.play() : editor.stop()
@@ -113,8 +118,8 @@ export default {
   padding-right: 10px;
   background: lightskyblue;
 }
-.btn-play {
-  width: 70px;
+.btn.reset {
+  background: lightsalmon;
 }
 .btn.preset {
   width: 80px;
