@@ -30,7 +30,10 @@ const fsSource = `
     } else {
       vec4 texColor0 = texture2D(uSampler0, texCoord.st);
       vec4 texColor1 = texture2D(uSampler1, texCoord.st);
-      gl_FragColor = texColor0 * texColor1;
+
+      vec4 color0 = texColor0 * (1.0 - presetDelta);
+      vec4 color1 = texColor1 * presetDelta;
+      gl_FragColor = color0 + color1;
     }
   }
 `
