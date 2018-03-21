@@ -17,9 +17,6 @@
           <button @click="useFile(i)" class="btn use">
             use
           </button>
-          <button @click="removeFile(i)" class="btn del">
-            del
-          </button>
         </div>
       </div>
     </div>
@@ -54,10 +51,6 @@ export default {
     },
     useFile (i) {
       this.$emit('fileUsed', this.files[i].file)
-    },
-    removeFile (i) {
-      this.$emit('fileDeleted', this.files[i].file)
-      this.files.splice(i, 1)
     }
   }
 }

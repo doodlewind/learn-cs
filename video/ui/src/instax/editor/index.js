@@ -14,19 +14,18 @@ export const STOP = 'STOP'
 
 const PRESET_OFFSET = 1
 
+const initState = {
+  type: INIT,
+  base: { ts: 0, position: 0 }
+}
+
 export class Editor {
   constructor () {
     // states
     this.ts = 0
     this.clips = []
-    this.buffer = {
-      videos: [],
-      preset: null
-    }
-    this.state = {
-      type: INIT,
-      base: { ts: 0, position: 0 }
-    }
+    this.buffer = { videos: [], preset: null }
+    this.state = initState
 
     // callbacks
     this.updateVideoCallbacks = []
@@ -40,6 +39,7 @@ export class Editor {
     this.setPreset = this.setPreset.bind(this)
     this.setState = this.setState.bind(this)
     this.pushFile = this.pushFile.bind(this)
+    this.resetClips = this.resetClips.bind(this)
     this.subscribe = this.subscribe.bind(this)
     loop(this.tick)
   }
@@ -130,6 +130,14 @@ export class Editor {
   async pushFile (file) {
     const clip = await file2Clip(file, this.duration)
     this.clips.push(clip)
+    this.updateClipCallbacks.forEach(fn => fn())
+  }
+
+  resetClips () {
+    this.ts = 0
+    this.clips = []
+    this.state = initState
+    this.buffer = { videos: [], preset: null }
     this.updateClipCallbacks.forEach(fn => fn())
   }
 

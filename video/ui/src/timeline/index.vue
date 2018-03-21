@@ -5,9 +5,10 @@
       <button @click="togglePaused" class="btn play">
         {{ pausedText }}
       </button>
+      <button @click="clear" class="btn clear">clear</button>
       <button @click="togglePreset" class="btn preset">
-          preset {{ presetText }}
-        </button>
+        preset {{ presetText }}
+      </button>
       <div>{{ currentTime.toFixed(2) }}s</div>
     </div>
     <div class="clips-container">
@@ -96,6 +97,9 @@ export default {
       this.hasPreset ? editor.setPreset(false) : editor.setPreset(true)
       this.hasPreset = !this.hasPreset
     },
+    clear () {
+      editor.resetClips()
+    },
     renderTick () {
       this.progress = editor.progress * 100
     }
@@ -122,6 +126,9 @@ export default {
 }
 .btn.reset {
   background: lightsalmon;
+}
+.btn.clear {
+  background: lightcoral;
 }
 .btn.preset {
   width: 80px;
