@@ -25,6 +25,7 @@
 
 <script>
 import Vue from 'vue'
+import { editor } from '../instax'
 
 const FAKE_CLICK_INTERVAL = 50
 export default {
@@ -50,7 +51,7 @@ export default {
       })
     },
     useFile (i) {
-      this.$emit('fileUsed', this.files[i].file)
+      editor.pushFile(this.files[i].file)
     }
   }
 }

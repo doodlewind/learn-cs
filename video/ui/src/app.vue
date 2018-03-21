@@ -3,10 +3,7 @@
     <div class="app">
       <div class="app-row">
         <preview/>
-        <picker
-          @fileUsed="onFileUsed"
-          @fileDeleted="onFileDeleted"
-        />
+        <picker/>
       </div>
       <timeline/>
     </div>
@@ -17,18 +14,9 @@
 import Preview from './preview'
 import Picker from './picker'
 import Timeline from './timeline'
-import { editor } from './instax'
 
 export default {
   name: 'App',
-  methods: {
-    onFileUsed (file) {
-      editor.pushFile(file)
-    },
-    onFileDeleted (file) {
-      console.log('TODO delete', file)
-    }
-  },
   components: {
     Preview,
     Picker,
