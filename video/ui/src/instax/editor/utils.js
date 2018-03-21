@@ -20,15 +20,44 @@ function getMockFile (position) {
   }
 }
 
-function getVideoDuration (url) {
+function getElement (url) {
   return new Promise((resolve, reject) => {
-    if (IS_NODE) return resolve(MOCK_DURATION)
+    if (IS_NODE) return resolve({ duration: MOCK_DURATION })
+
+    // Async latch flags.
+    // let playingFlag = false
+    // let timeupdateFlag = false
+    let metadataFlag = false
 
     const video = document.createElement('video')
-    video.src = url
+    video.autoplay = false
+    video.muted = true
+    video.loop = false
+
     video.addEventListener('loadedmetadata', (e) => {
-      resolve(video.duration)
+      metadataFlag = true
+      checkReady()
     })
+
+    /*
+    video.addEventListener('playing', function () {
+      playingFlag = true
+      checkReady()
+    }, true)
+
+    video.addEventListener('timeupdate', function () {
+      timeupdateFlag = true
+      checkReady()
+    }, true)
+    */
+
+    video.src = url
+
+    function checkReady () {
+      // if (!(playingFlag && timeupdateFlag && metadataFlag)) return
+      if (!metadataFlag) return
+      resolve(video)
+    }
   })
 }
 
@@ -54,11 +83,14 @@ export function shouldVideosUpdate (currentVideos, nextVideos) {
 export async function file2Clip (file, position) {
   if (IS_NODE) return getMockFile(position)
   const url = window.URL.createObjectURL(file)
+  const element = await getElement(url)
+
   return {
     name: file.name,
     position,
     start: 0,
-    end: await getVideoDuration(url),
+    end: element.duration,
+    element,
     url
   }
 }

@@ -2,7 +2,7 @@ import { initProgram } from './shaders'
 import { initBuffers } from './buffers'
 import { initTextures } from './textures'
 import { render } from './render'
-import { initVideo } from './utils'
+import { setVideoState } from './utils'
 import { PLAY } from '../editor'
 
 export class Renderer {
@@ -24,23 +24,15 @@ export class Renderer {
     this.updateVideos = this.updateVideos.bind(this)
   }
 
-  async updateVideos (type, videos) {
+  updateVideos (type, videos) {
     const paused = type !== PLAY
-    const promises = videos.map(v => initVideo(v.clip.url, v.position, paused))
+    const promises = videos.map(
+      video => setVideoState(video.clip.element, paused, video.position)
+    )
 
-    Promise.all(promises).then(sources => {
-      this.sources = sources
-      sources.forEach((source, i) => {
-        const { position } = videos[i]
-        if (position === 0 && !paused) source.play()
-        else if (position === 0 && paused) {
-          source.currentTime = position
-        } else if (position !== 0 && !paused) {
-          source.pause()
-          source.currentTime = position
-          source.play()
-        }
-      })
+    Promise.all(promises).then(() => {
+      const elements = videos.map(video => video.clip.element)
+      this.sources = elements
     })
   }
 

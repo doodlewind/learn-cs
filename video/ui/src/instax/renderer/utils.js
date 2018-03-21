@@ -1,32 +1,12 @@
-export function initVideo (url, position = 0, paused = false) {
-  return new Promise((resolve, reject) => {
-    const video = document.createElement('video')
-
-    // Async latch flags.
-    let playingFlag = false
-    let timeupdateFlag = false
-
-    video.autoplay = !paused
-    video.muted = true
-    video.loop = false
-
-    // Waiting for these 2 events to ensure
-    // there is data in the video.
-    video.addEventListener('playing', function () {
-      playingFlag = true
-      checkReady()
-    }, true)
-
-    video.addEventListener('timeupdate', function () {
-      timeupdateFlag = true
-      checkReady()
-    }, true)
-
-    video.src = url
-
-    function checkReady () {
-      if (!(playingFlag && timeupdateFlag)) return
-      resolve(video)
-    }
-  })
+// Async video state setter wrapped by promise.
+export function setVideoState (element, paused, position) {
+  if (position === 0 && !paused) return element.play()
+  else if (position === 0 && paused) {
+    element.currentTime = position
+    return Promise.resolve()
+  } else if (position !== 0 && !paused) {
+    element.pause()
+    element.currentTime = position
+    return element.play()
+  }
 }
