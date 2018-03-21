@@ -24,9 +24,6 @@ function getElement (url) {
   return new Promise((resolve, reject) => {
     if (IS_NODE) return resolve({ duration: MOCK_DURATION })
 
-    // Async latch flags.
-    // let playingFlag = false
-    // let timeupdateFlag = false
     let metadataFlag = false
 
     const video = document.createElement('video')
@@ -39,22 +36,9 @@ function getElement (url) {
       checkReady()
     })
 
-    /*
-    video.addEventListener('playing', function () {
-      playingFlag = true
-      checkReady()
-    }, true)
-
-    video.addEventListener('timeupdate', function () {
-      timeupdateFlag = true
-      checkReady()
-    }, true)
-    */
-
     video.src = url
 
     function checkReady () {
-      // if (!(playingFlag && timeupdateFlag && metadataFlag)) return
       if (!metadataFlag) return
       resolve(video)
     }
