@@ -11,7 +11,7 @@ export default {
   name: 'Preview',
   mounted () {
     const $canvas = this.$el.children[0]
-    this.renderer = new Renderer($canvas)
+    this.renderer = new Renderer($canvas, editor.buffer)
     // debug
     window.renderer = this.renderer
     editor.subscribe({

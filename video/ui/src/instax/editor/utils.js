@@ -64,6 +64,18 @@ export function shouldVideosUpdate (currentVideos, nextVideos) {
   ))
 }
 
+export function setBuffer (
+  buffer, state, ts, nextVideos
+) {
+  // Perform tweening before firing stant / end events.
+  // TODO remove hard coded value for mocking.
+  if (nextVideos.length === 2) {
+    const basePosition = nextVideos[1].clip.position
+    const tween = (ts - state.base.ts) / 1e3 - basePosition
+    buffer.preset = tween
+  } else buffer.preset = null
+}
+
 export async function file2Clip (file, position) {
   if (IS_NODE) return getMockFile(position)
   const url = window.URL.createObjectURL(file)

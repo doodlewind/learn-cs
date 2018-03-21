@@ -36,7 +36,7 @@ export class Renderer {
     })
   }
 
-  render () {
+  render ({ preset }) {
     const {
       gl,
       program,
@@ -46,6 +46,15 @@ export class Renderer {
       textures,
       sources
     } = this
-    render(gl, program, attributes, uniforms, buffers, textures, sources)
+    render(
+      gl,
+      program,
+      attributes,
+      uniforms,
+      buffers,
+      textures,
+      sources,
+      preset
+    )
   }
 }

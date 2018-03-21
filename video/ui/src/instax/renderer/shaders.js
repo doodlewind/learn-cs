@@ -14,14 +14,24 @@ const fsSource = `
   precision mediump float;
 
   varying vec2 vertPos;
+
+  uniform bool hasPreset;
+  uniform float presetDelta;
+
   uniform sampler2D uSampler0;
   uniform sampler2D uSampler1;
 
   void main() {
     vec2 texCoord = vec2(vertPos.s, -vertPos.t) * 0.5 + 0.5;
-    vec4 texColor0 = texture2D(uSampler0, texCoord.st);
-    vec4 texColor1 = texture2D(uSampler1, texCoord.st);
-    gl_FragColor = texColor0 * texColor1;
+
+    if (!hasPreset) {
+      vec4 texColor0 = texture2D(uSampler0, texCoord.st);
+      gl_FragColor = texColor0;
+    } else {
+      vec4 texColor0 = texture2D(uSampler0, texCoord.st);
+      vec4 texColor1 = texture2D(uSampler1, texCoord.st);
+      gl_FragColor = texColor0 * texColor1;
+    }
   }
 `
 
@@ -66,6 +76,8 @@ export function initProgram (gl) {
       inPos: gl.getAttribLocation(program, 'inPos')
     },
     uniforms: {
+      presetDelta: gl.getUniformLocation(program, 'presetDelta'),
+      hasPreset: gl.getUniformLocation(program, 'hasPreset'),
       uSampler0: gl.getUniformLocation(program, 'uSampler0'),
       uSampler1: gl.getUniformLocation(program, 'uSampler1')
     }

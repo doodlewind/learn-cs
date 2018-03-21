@@ -4,6 +4,7 @@ import {
   loop,
   getNextVideos,
   file2Clip,
+  setBuffer,
   shouldVideosUpdate
 } from './utils'
 
@@ -90,7 +91,7 @@ export class Editor {
         ? prev.position + prev.end - prev.start - PRESET_OFFSET
         : prev.position + prev.end - prev.start
     }
-    this.updateClipCallbacks.forEach(cb => cb())
+    this.updateClipCallbacks.forEach(fn => fn())
   }
 
   setState (newState) {
@@ -108,10 +109,13 @@ export class Editor {
 
   tick (ts) {
     this.ts = ts
-    this.tickCallbacks.forEach(cb => cb())
 
     const currentTime = this.progress * this.duration
     const nextVideos = getNextVideos(this.clips, currentTime)
+
+    setBuffer(this.buffer, this.state, ts, nextVideos)
+    this.tickCallbacks.forEach(fn => fn(this.buffer))
+
     // Emit video update events by diffing in each tick.
     if (shouldVideosUpdate(this.buffer.videos, nextVideos)) {
       this.buffer.videos = nextVideos
@@ -126,7 +130,7 @@ export class Editor {
   async pushFile (file) {
     const clip = await file2Clip(file, this.duration)
     this.clips.push(clip)
-    this.updateClipCallbacks.forEach(cb => cb())
+    this.updateClipCallbacks.forEach(fn => fn())
   }
 
   subscribe ({

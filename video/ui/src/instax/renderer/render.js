@@ -26,7 +26,14 @@ function renderSources (gl, textures, sources) {
 }
 
 export function render (
-  gl, program, attributes, uniforms, buffers, textures, sources
+  gl,
+  program,
+  attributes,
+  uniforms,
+  buffers,
+  textures,
+  sources,
+  delta
 ) {
   // clear
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -52,6 +59,7 @@ export function render (
   // uniforms
   gl.uniform1i(uniforms.uSampler0, 0)
   gl.uniform1i(uniforms.uSampler1, 1)
+  gl.uniform1f(uniforms.hasPreset, delta === null ? 0 : 1)
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
